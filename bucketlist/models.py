@@ -1,5 +1,5 @@
 import datetime
-from bucketlists import db
+from bucketlist import db
 
 
 class User(db.Model):

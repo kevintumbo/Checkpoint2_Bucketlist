@@ -1,4 +1,4 @@
-from bucketlists import app
+from bucketlist import app
 
 @app.route('/')
 @app.route('/index')
