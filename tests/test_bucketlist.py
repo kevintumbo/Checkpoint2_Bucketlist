@@ -1,5 +1,5 @@
 import json
-from base_test import BaseTestCase
+from tests.base_test import BaseTestCase
 
 URL_bucketlist = '/api/v1.0/bucketlists/'
 

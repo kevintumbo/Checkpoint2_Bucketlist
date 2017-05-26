@@ -1,5 +1,5 @@
 import json
-from base_test import BaseTestCase
+from tests.base_test import BaseTestCase
 
 URL_Login = '/api/v1.0/auth/login'
 URL_register =  '/api/v1.0/auth/register'

@@ -1,5 +1,5 @@
 import json
-from base_test import BaseTestCase
+from tests.base_test import BaseTestCase
 
 # POST /bucketlists/<id>/items/
 # PUT /bucketlists/<id>/items/<item_id>

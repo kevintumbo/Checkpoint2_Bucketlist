@@ -10,6 +10,7 @@ class BaseTestCase(unittest.TestCase):
         """ this function creates the base test"""
 
         self.app = create_app(config_name="development")
+
         self.user1 = User(username="ktumbo",
                           email="ktumbo@gmail.com",
                           password="password")
@@ -26,16 +27,19 @@ class BaseTestCase(unittest.TestCase):
                                       description="Things To Achieve in Life",
                                       owner_id=1)
 
-        self.item1 = Item(name="Be A Python and Js Ninja",
+        self.item1 = Item(item_name="Be A Python and Js Ninja",
                           item_description="Be a pro in flask, Django, Angular, React and vue ",
                           owner_id=1,
                           bucketlist_id=1)
 
-        self.item2 = Item(name="Be a rockstar",
+        self.item2 = Item(item_name="Be a rockstar",
                           item_description="Learn how to play slipknot songs proficiently",
                           owner_id=1,
                           bucketlist_id=2)
-        db.create_all()
+
+        with self.app.app_context():
+
+            db.create_all()
 
     def tearDown(self):
         """ removes resources once tests have run """
