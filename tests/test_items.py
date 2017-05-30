@@ -137,7 +137,7 @@ class BueketListItemsTests(BaseTestCase):
         # Make the post request and get the response
         response = self.app.put("/api/v1.0/bucketlists/1/items/1",
                                 data, content_type="application/json")
-        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['Message'], "You have succesfully updated bucketlist item")
 
     def test_update_nonexisting_bucketlist_item(self):
@@ -200,5 +200,5 @@ class BueketListItemsTests(BaseTestCase):
         response = self.app.put("/api/v1.0/bucketlists/1/items/1",
                                 data, content_type="application/json")
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['message'], "item updated to not done")

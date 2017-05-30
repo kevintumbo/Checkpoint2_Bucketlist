@@ -90,7 +90,7 @@ class BucketListTests(BaseTestCase):
         Test Api can retrive existing bucketlist using name as a parameter
         (GET request)
         """
-        response = self.app.get("/api/v1.0/bucketlists/Life_Goals")
+        response = self.app.get("/api/v1.0/bucketlists/Life+Goals")
         self.assertEqual(response.status_code, 200)
         self.assertIn(response.json()['name'], "Life Goals")
         self.assertIn(response.json()['description'], "TThings To Achieve in Life")
