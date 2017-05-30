@@ -10,6 +10,7 @@ class BaseTestCase(unittest.TestCase):
         """ this function creates the base test"""
 
         self.app = create_app(config_name="development")
+        self.client = self.app.test_client
 
         self.user1 = User(username="ktumbo",
                           email="ktumbo@gmail.com",

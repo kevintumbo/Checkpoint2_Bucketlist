@@ -16,16 +16,16 @@ class BueketListItemsTests(BaseTestCase):
         Test API can succesfully create a bucketlist item (POST request)
         """
 
-        data = json.dumps({
+        self.data = {
             "item_name":" Trance Music",
             "item_description":"Create deadmaus trance remakes",
             "owner_id": 1,
             "bucketlist_id":1
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.post("/api/v1.0/bucketlists/1/items/",
-                                 data, content_type="application/json")
+        response = self.client().post("/api/v1.0/bucketlists/1/items/",
+                                      data=self.data, content_type="application/json")
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json()['message'], "bucketlist item succesfully created ")
@@ -36,16 +36,16 @@ class BueketListItemsTests(BaseTestCase):
         Test API cannot create a bucketlist item when name is missing
         (POST request)
         """
-        data = json.dumps({
+        self.data = {
             "item_name":" ",
             "item_description":"Buy a guitar",
             "owner_id": 1,
             "bucketlist_id":2
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.post("/api/v1.0/bucketlists/2/items/",
-                                 data, content_type="application/json")
+        response = self.client().post("/api/v1.0/bucketlists/2/items/",
+                                      data=self.data, content_type="application/json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['error'], "Bucketlist item title missing")
 
@@ -55,16 +55,16 @@ class BueketListItemsTests(BaseTestCase):
         (POST request)
         """
 
-        data = json.dumps({
+        self.data = {
             "item_name":"slipknot tings",
             "item_description":" *&*(^^^*^)*^))(&(",
             "owner_id": 1,
             "bucketlist_id":2
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.post("/api/v1.0/bucketlists/2/items/",
-                                 data, content_type="application/json")
+        response = self.client().post("/api/v1.0/bucketlists/2/items/",
+                                      data=self.data, content_type="application/json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['error'], "Bucketlist item in invalid format")
 
@@ -74,16 +74,16 @@ class BueketListItemsTests(BaseTestCase):
         (POST request)
         """
 
-        data = json.dumps({
+        self.data = {
             "item_name":"snowboard",
             "item_description":" ",
             "owner_id": 1,
             "bucketlist_id":1
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.post("/api/v1.0/bucketlists/1/items/",
-                                 data, content_type="application/json")
+        response = self.client().post("/api/v1.0/bucketlists/1/items/",
+                                      data=self.data, content_type="application/json")
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['error'], "Bucketlist item missing description")
 
@@ -92,16 +92,16 @@ class BueketListItemsTests(BaseTestCase):
         """
         Test API cannot create a duplicate bucketlist item (POST request)
         """
-        data = json.dumps({
+        self.data = {
             "item_name":"Be A Python and Js Ninja",
             "item_description":"Be a pro in flask, Django, Angular, React and vue",
             "owner_id": 1,
             "bucketlist_id":1
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.post("/api/v1.0/bucketlists/1/items/1",
-                                 data, content_type="application/json")
+        response = self.client().post("/api/v1.0/bucketlists/1/items/1",
+                                      data=self.data, content_type="application/json")
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['message'], "Bucketlist item already exists")
@@ -111,16 +111,16 @@ class BueketListItemsTests(BaseTestCase):
         """
         Test API cannot create a bucketlist item in a bucketlist that doesn't exist(POST request)
         """
-        data = json.dumps({
+        self.data = {
             "item_name":"wagwan",
             "item_description":"Testing 1 2",
             "owner_id": 1,
             "bucketlist_id":67
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.post("/api/v1.0/bucketlists/67/items/",
-                                 data, content_type="application/json")
+        response = self.client().post("/api/v1.0/bucketlists/67/items/",
+                                      data=self.data, content_type="application/json")
 
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json()['message'], "Bucketlist does not exist")
@@ -129,14 +129,14 @@ class BueketListItemsTests(BaseTestCase):
         """
         Test API can edit a bucketlist item (PUT request)
         """
-        data = json.dumps({
+        self.data = {
             "item_name":"Be A Python and Ruby Ninja(update)",
             "item_description":"Be a pro in flask, Django and Ruby on Rails"
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.put("/api/v1.0/bucketlists/1/items/1",
-                                data, content_type="application/json")
+        response = self.client().put("/api/v1.0/bucketlists/1/items/1",
+                                     data=self.data, content_type="application/json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['Message'], "You have succesfully updated bucketlist item")
 
@@ -144,14 +144,14 @@ class BueketListItemsTests(BaseTestCase):
         """
         Test API cannot update a bucketlist item that doesn't exist (PUT request)
         """
-        data = json.dumps({
+        self.data = {
             "item_name":"Be A Python and Js Ninja",
             "item_description":"Be a pro in flask, Django, Angular, React and vue"
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.put("/api/v1.0/bucketlists/1/items/5778676",
-                                data, content_type="application/json")
+        response = self.client().put("/api/v1.0/bucketlists/1/items/5778676",
+                                     data=self.data, content_type="application/json")
 
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json()['error'], "bucketlist item does not exist")
@@ -161,7 +161,7 @@ class BueketListItemsTests(BaseTestCase):
         """
         Test API can delete an existing bucketlist (DELETE request)
         """
-        response = self.app.delete("/api/v1.0/bucketlists/2")
+        response = self.client().delete("/api/v1.0/bucketlists/2")
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json()['message'], "bucketlist item has been deleted")
 
@@ -169,7 +169,7 @@ class BueketListItemsTests(BaseTestCase):
         """
         Test API cannot delete a bucketlist item that does not exist (DELETE request)
         """
-        response = self.app.delete("/api/v1.0/bucketlists/2")
+        response = self.client().delete("/api/v1.0/bucketlists/2")
         self.assertEqual(response.status_code, 404)
         self.assertEqual(response.json()['error'], "bucketlist item does not exist")
 
@@ -177,13 +177,13 @@ class BueketListItemsTests(BaseTestCase):
         """
         Test API can change status of bucketlist item to done (PUT request)
         """
-        data = json.dumps({
+        self.data = {
             "is_done": 1
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.put("/api/v1.0/bucketlists/1/items/2",
-                                data, content_type="application/json")
+        response = self.client().put("/api/v1.0/bucketlists/1/items/2",
+                                     data=self.data, content_type="application/json")
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['message'], "item updated to done")
@@ -192,13 +192,13 @@ class BueketListItemsTests(BaseTestCase):
         """
         Test API can change status a bucketlist item to not done (PUT request)
         """
-        data = json.dumps({
+        self.data = {
             "is_done": 0
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.put("/api/v1.0/bucketlists/1/items/1",
-                                data, content_type="application/json")
+        response = self.client().put("/api/v1.0/bucketlists/1/items/1",
+                                     data=self.data, content_type="application/json")
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['message'], "item updated to not done")

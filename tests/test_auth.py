@@ -2,7 +2,7 @@ import json
 from tests.base_test import BaseTestCase
 
 URL_Login = '/api/v1.0/auth/login'
-URL_register =  '/api/v1.0/auth/register'
+URL_register = '/api/v1.0/auth/register'
 
 
 class TestAuthentication(BaseTestCase):
@@ -14,14 +14,14 @@ class TestAuthentication(BaseTestCase):
          (POST request)
         """
 
-        data = json.dumps({
+        self.data = {
             "username": "maus",
             "email": "maus@gmail.com",
             "password": "deadmaus"
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.post(URL_register, data, content_type="application/json")
+        response = self.client().post(URL_register, data=self.data, content_type="application/json")
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.json()['message'], "You have succesfully created a user")
@@ -31,14 +31,14 @@ class TestAuthentication(BaseTestCase):
         Test API cannot register a user if username is missing
          (POST request)
         """
-        data = json.dumps({
+        self.data = {
             "username": " ",
             "email": "stan@gmail.com",
             "password": "stanbic"
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.post(URL_register, data, content_type="application/json")
+        response = self.client().post(URL_register, data=self.data, content_type="application/json")
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['error'], "username is missing")
@@ -48,14 +48,14 @@ class TestAuthentication(BaseTestCase):
         Test API cannot register a user if email is missing
          (POST request)
         """
-        data = json.dumps({
+        self.data = {
             "username": "happy",
             "email": " ",
             "password": "wapi"
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.post(URL_register, data, content_type="application/json")
+        response = self.client().post(URL_register, data=self.data, content_type="application/json")
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['error'], "Email address is missing")
@@ -65,14 +65,14 @@ class TestAuthentication(BaseTestCase):
         Test API cannot register a user if password is missing
          (POST request)
         """
-        data = json.dumps({
+        self.data = {
             "username": "blackie",
             "email": "blackman@gmail.com",
             "password": " "
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.post(URL_register, data, content_type="application/json")
+        response = self.client().post(URL_register, data=self.data, content_type="application/json")
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['error'], "Password is missing")
@@ -82,14 +82,14 @@ class TestAuthentication(BaseTestCase):
         Test API cannot register a user if email address is already in the system
          (POST request)
         """
-        data = json.dumps({
+        self.data =  {
             "username": "snowpatrol",
             "email": "geo@gmail.com",
             "password": "openeyes"
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.post(URL_register, data, content_type="application/json")
+        response = self.client().post(URL_register, data=self.data, content_type="application/json")
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['error'], "email address already in use")
@@ -99,14 +99,14 @@ class TestAuthentication(BaseTestCase):
         Test API cannot register a user if username is already in the system
          (POST request)
         """
-        data = json.dumps({
+        self.data = {
             "username": "georgreen",
             "email": "redjump@gmail",
             "password": "heaven"
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.post(URL_register, data, content_type="application/json")
+        response = self.client().post(URL_register, data=self.data, content_type="application/json")
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['error'], "username already Taken")
@@ -116,13 +116,13 @@ class TestAuthentication(BaseTestCase):
         Test API can sucesfully login a user (POST request)
         """
 
-        data = json.dumps({
+        self.data = {
             "email": "ktumbo@gmail.com",
             "password": "password"
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.post(URL_register, data, content_type="application/json")
+        response = self.client().post(URL_register, data=self.data, content_type="application/json")
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()['Message'], "You have succesfully loggeg in")
@@ -131,13 +131,13 @@ class TestAuthentication(BaseTestCase):
         """
         Test API cannot log in a user if username is missing (POST request)
         """
-        data = json.dumps({
+        self.data = {
             "email": " ",
             "password": "password"
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.post(URL_register, data, content_type="application/json")
+        response = self.client().post(URL_register, data=self.data, content_type="application/json")
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['error'], "Email address is missing")
@@ -147,13 +147,13 @@ class TestAuthentication(BaseTestCase):
         Test API cannot log in a user if email address is wrong or does not exist
          (POST request)
         """
-        data = json.dumps({
+        self.data = {
             "email": "kigumo@gmail.com",
             "password": "password"
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.post(URL_register, data, content_type="application/json")
+        response = self.client().post(URL_register, data=self.data, content_type="application/json")
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['error'], "wrong email/password combination")
@@ -163,13 +163,13 @@ class TestAuthentication(BaseTestCase):
         Test API cannot log in a user if password is missing
          (POST request)
         """
-        data = json.dumps({
+        self.data = {
             "email": "ktumbo@gmail.com",
             "password": " "
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.post(URL_register, data, content_type="application/json")
+        response = self.client().post(URL_register, data=self.data, content_type="application/json")
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['error'], "Password is missing")
@@ -179,13 +179,13 @@ class TestAuthentication(BaseTestCase):
         Test API cannot log in a user if password is wrong
          (POST request)
         """
-        data = json.dumps({
+        self.data = {
             "email": "ktumbo@gmail.com",
             "password": "atinini"
-        })
+        }
 
         # Make the post request and get the response
-        response = self.app.post(URL_register, data, content_type="application/json")
+        response = self.client().post(URL_register, data=self.data, content_type="application/json")
 
         self.assertEqual(response.status_code, 400)
         self.assertEqual(response.json()['error'], "wrong email/password combination")
