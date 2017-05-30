@@ -20,7 +20,7 @@ Thumbs.db
 cp2-venv
 
 # Database files
-.db
+*.db
 
 # Cache files
 .cache
