@@ -24,17 +24,40 @@ def create_app(config_name):
     def bucketlists():
         if request.method == "POST":
             name = str(request.data.get('name', ''))
-            if name:
-                bucketlist = Bucketlist(name=name)
-                bucketlist.save()
+            description = str(request.data.get('description', ''))
+            if not name:
                 response = jsonify({
-                    'id': bucketlist.id,
-                    'name': bucketlist.name,
-                    'date_created': bucketlist.date_created,
-                    'date_modified': bucketlist.date_modified
+                    'message': "bucketlist missing name"
                 })
-                response.status_code = 201
+                response.status_code = 400
                 return response
+            if not description:
+                response = jsonify({
+                    'message': "Bucketlist desscription missing"
+                })
+                response.status_code = 400
+                return response
+            if name:
+                check_bucketlist = Bucketlist.query.filter_by(name=name).first()
+                if check_bucketlist:
+                    response = jsonify({
+                        'message': "That bucketlist already exists"
+                    })
+                    response.status_code = 409
+                    return response
+                else:
+                    bucketlist = Bucketlist(name=name)
+                    bucketlist.save()
+                    response = jsonify({
+                        'id': bucketlist.id,
+                        'name': bucketlist.name,
+                        'description': bucketlist.description,
+                        'date_created': bucketlist.date_created,
+                        'date_modifed': bucketlist.date_modifed,
+                        'message': "You have succesfully created a bucketlist"
+                    })
+                    response.status_code = 201
+                    return response
         else:
             # GET
             bucketlists = Bucketlist.get_all()
@@ -52,12 +75,42 @@ def create_app(config_name):
             response.status_code = 200
             return response
 
-    @app.route('/bucketlists/<int:id>', methods=['POST','GET', 'PUT', 'DELETE'])
-    def bucketlist_manipulation(id, **kwargs):
-           #########################################################
-        ### Existing code for creating, updating and deleting a bucketlist #####
-        #########################################################
+    @app.route('/api/v1.0/bucketlists/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+    def bucketlist_manipulation(id):
+     # retrieve a buckelist using it's ID
+        bucketlist = Bucketlist.query.filter_by(id=id).first()
+        if not bucketlist:
+            # Raise an HTTPException with a 404 not found status code
+            abort(404)
 
-        app.register_blueprint(auth_blueprint)
+        if request.method == 'DELETE':
+            bucketlist.delete()
+            return {
+                "message": "bucketlist {} deleted successfully".format(bucketlist.id)
+            }, 200
+
+        elif request.method == 'PUT':
+            name = str(request.data.get('name', ''))
+            bucketlist.name = name
+            bucketlist.save()
+            response = jsonify({
+                'id': bucketlist.id,
+                'name': bucketlist.name,
+                'date_created': bucketlist.date_created,
+                'date_modifed': bucketlist.date_modifed,
+                'message':"You have succesfully updated a bucketlist"
+            })
+            response.status_code = 200
+            return response
+        else:
+            # GET
+            response = jsonify({
+                'id': bucketlist.id,
+                'name': bucketlist.name,
+                'date_created': bucketlist.date_created,
+                'date_modifed': bucketlist.date_modifed
+            })
+            response.status_code = 200
+            return response
     return app
 

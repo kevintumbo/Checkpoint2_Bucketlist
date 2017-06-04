@@ -20,13 +20,15 @@ class BaseTestCase(unittest.TestCase):
                           email="geo@gmail.com",
                           password="password1")
 
-        self.bucketlist1 = Bucketlist(name="Work goals",
-                                      description="Things To achieve at work",
-                                      owner_id=1)
+        self.bucketlist1 = {"name":"Work goals",
+                            "description":"Things To achieve at work",
+                            "owner_id": 1
+                           }
 
-        self.bucketlist2 = Bucketlist(name="Life Goals",
-                                      description="Things To Achieve in Life",
-                                      owner_id=1)
+        self.bucketlist2 = {"name":"Life Goals",
+                            "description":"Things To Achieve in Life",
+                            "owner_id": 1
+                           }
 
         self.item1 = Item(item_name="Be A Python and Js Ninja",
                           item_description="Be a pro in flask, Django, Angular, React and vue ",

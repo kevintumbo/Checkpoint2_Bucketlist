@@ -44,7 +44,7 @@ class User(db.Model):
             # create the byte string token using the payload and the SECRET key
             jwt_string = jwt.encode(
                 payload,
-                'BLEED',
+                current_app.config.get('SECRET'),
                 algorithm='HS256'
             )
             return jwt_string
@@ -66,7 +66,7 @@ class User(db.Model):
         except jwt.InvalidTokenError:
             # the token is invalid, return an error string
             return "Invalid token. Please register or login"
-    
+
     def __repr__(self):
         return '<User %r>' % self.username
 
@@ -86,6 +86,13 @@ class Bucketlist(db.Model):
     def __repr__(self):
         return '<List name %r>' % self.name
 
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+    
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
 class Item(db.Model):
 
     """ creates a bucketlist item """

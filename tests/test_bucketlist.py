@@ -7,38 +7,37 @@ URL_bucketlist = '/api/v1.0/bucketlists/'
 class BucketListTests(BaseTestCase):
     """ Test cases for Bucketlist functionality"""
 
-    def test_for_succesfull_creation_of_bucketlist(self):
+    def test_create_bucketlist_succesfully(self):
         """
         Test API can create a bucketlist (POST request)
         """
 
         self.data = {
-            "name":" Midlife goals",
+            "name":"Midlife goals",
             "description":"My achievement by 40",
             "owner_id": 1
         }
 
         # Make the post request and get the response
-        response = self.client().post(URL_bucketlist, data=self.data, content_type="application/json")
-
+        response = self.client().post(URL_bucketlist,
+                                      data=self.data)
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json()['message'], "You have succesfully created a bucketlist")
+        self.assertIn("You have succesfully created a bucketlist", str(response.data))
 
     def test_bucketlist_creation_when_missing_name(self):
         """
         Test API cannot create a bucketlist when name is missing (POST request)
         """
         self.data = {
-            "name":" ",
             "description":"Things to do in 2017",
             "owner_id": 1
         }
 
         # Make the post request and get the response
-        response = self.client().post(URL_bucketlist, data=self.data, content_type="application/json")
-
+        response = self.client().post(URL_bucketlist, data=self.data)
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()['error'], "Bucketlist name missing")
+        self.assertIn("bucketlist missing name", str(response.data))
+
 
     def test_bucketlist_creation_when_missing_description(self):
         """
@@ -48,15 +47,14 @@ class BucketListTests(BaseTestCase):
 
         self.data = {
             "name":"20:20 vision",
-            "description":" ",
             "owner_id": 1
         }
 
         # Make the post request and get the response
-        response = self.client().post(URL_bucketlist, data=self.data, content_type="application/json")
+        response = self.client().post(URL_bucketlist, data=self.data)
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()['error'], "Bucketlist desscription missing")
+        self.assertIn("Bucketlist desscription missing", str(response.data))
 
     def test_creation_of_duplicate_bucketlist(self):
         """
@@ -64,17 +62,26 @@ class BucketListTests(BaseTestCase):
         """
 
         self.data = {
-            "name":"Work goals",
-            "description":"Things To achieve at work",
+            "name":"Midlife goals",
+            "description":"My achievement by 40",
             "owner_id": 1
         }
 
         # Make the post request and get the response
-        response = self.client().post(URL_bucketlist,
-                                      data=self.data, content_type="application/json")
+        response1 = self.client().post(URL_bucketlist, data=self.data)
 
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json()['error'], "That bucketlist already exists")
+        self.data2 = {
+            "name":"Midlife goals",
+            "description":"My achievement by 40",
+            "owner_id": 1
+        }
+        response2 = self.client().post(URL_bucketlist, data=self.data)
+
+        self.assertEqual(response2.status_code, 409)
+        self.assertIn("That bucketlist already exists", str(response2.data))
+
+    def test_retrive_all_bucketlists(self):
+        pass
 
     def test_get_bucketlist_using_id(self):
         """
@@ -103,7 +110,7 @@ class BucketListTests(BaseTestCase):
         """
         response = self.client().get("/api/v1.0/bucketlists/66686768")
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json()['error'], "bucketlist does not exist")
+        self.assertIn("404 Not Found", str(response.data))
 
     def test_get_bucketlist_without_id_or_name(self):
         """
@@ -119,15 +126,24 @@ class BucketListTests(BaseTestCase):
         Test API can create update bucketlist (PUT request)
         """
         self.data = {
+            "name":"Update goals",
+            "description":"at work(updated)",
+            "owner_id": 1
+        }
+
+        response = self.client().post(URL_bucketlist,
+                                      data=self.data)
+        self.data = {
             "name":"Update work goals",
             "description":"Things To achieve at work(updated)",
             "owner_id": 1
         }
 
         response = self.client().put("/api/v1.0/bucketlists/1",
-                                     data=self.data, content_type="application/json")
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json()['Message'], "You have succesfully updated a bucketlist")
+                                     data=self.data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("You have succesfully updated a bucketlist", str(response.data))
 
     def test_update_nonexisting_bucketlist(self):
         """
@@ -140,19 +156,25 @@ class BucketListTests(BaseTestCase):
             "owner_id": 1
         }
 
-        response = self.client().put("/api/v1.0/bucketlists/1088",
-                                     data=self.data, content_type="application/json")
+        response = self.client().put("/api/v1.0/bucketlists/1088", data=self.data)
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json()['error'], "bucketlist does not exist")
+        self.assertIn("404 Not Found", str(response.data))
 
     def test_deletion_of_bucketlist(self):
         """
         Test API can delete a bucketlist
         (DELETE request)
         """
-        response = self.client().delete("/api/v1.0/bucketlists/2")
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json()['message'], "bucketlist has been deleted")
+        self.data = {
+            "name":"Update work goals",
+            "description":"Things To achieve at work(updated)",
+            "owner_id": 1
+        }
+
+        response = self.client().post(URL_bucketlist, data=self.data)
+        response2 = self.client().delete("/api/v1.0/bucketlists/1")
+        self.assertEqual(response2.status_code, 200)
+        self.assertIn("bucketlist 1 deleted successfully", str(response2.data))
 
     def test_deletion_of_nonexistant_bucketlist(self):
         """
@@ -160,4 +182,4 @@ class BucketListTests(BaseTestCase):
         """
         response = self.client().delete("/api/v1.0/bucketlists/290834")
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json()['message'], "bucketlist does not exist")
+        self.assertIn("404 Not Found", str(response.data))
