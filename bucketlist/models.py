@@ -16,7 +16,7 @@ class User(db.Model):
     password = db.Column(db.String(120))
     date_created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
     bucketlists = db.relationship('Bucketlist', backref='users', lazy='dynamic')
-    items = db.relationship('Item', backref='user', lazy='dynamic')
+    items = db.relationship('Item', backref='users', lazy='dynamic')
 
     def __init__(self, username, email, password):
         """Initialize the user with username, email and a password."""
@@ -44,7 +44,7 @@ class User(db.Model):
             # create the byte string token using the payload and the SECRET key
             jwt_string = jwt.encode(
                 payload,
-                current_app.config.get('SECRET'),
+                'BLEED',
                 algorithm='HS256'
             )
             return jwt_string
@@ -58,7 +58,7 @@ class User(db.Model):
         """Decodes the access token from the Authorization header."""
         try:
             # try to decode the token using our SECRET variable
-            payload = jwt.decode(token, 'SECRET')
+            payload = jwt.decode(token, 'BLEED')
             return payload['sub']
         except jwt.ExpiredSignatureError:
             # the token is expired, return an error string
@@ -66,6 +66,13 @@ class User(db.Model):
         except jwt.InvalidTokenError:
             # the token is invalid, return an error string
             return "Invalid token. Please register or login"
+
+    def save(self):
+        """Save a user to the database.
+        This includes creating a new user and editing one.
+        """
+        db.session.add(self)
+        db.session.commit()
 
     def __repr__(self):
         return '<User %r>' % self.username
@@ -109,3 +116,11 @@ class Item(db.Model):
 
     def __repr__(self):
         return '<Item Name %r>' % self.item_name
+    
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+    
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
