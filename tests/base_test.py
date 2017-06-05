@@ -16,19 +16,16 @@ class BaseTestCase(unittest.TestCase):
                           email="ktumbo@gmail.com",
                           password="password")
 
-        self.user2 = User(username="georgreen",
-                          email="geo@gmail.com",
-                          password="password1")
 
-        self.bucketlist1 = {"name":"Work goals",
-                            "description":"Things To achieve at work",
-                            "owner_id": 1
-                           }
+        self.bucketlist = {"name":"Work goals",
+                           "description":"Things To achieve at work",
+                           "owner_id": 1
+                          }
 
-        self.bucketlist2 = {"name":"Life Goals",
-                            "description":"Things To Achieve in Life",
-                            "owner_id": 1
-                           }
+        self.bucketlists2 = {"name":"Life Goals",
+                             "description":"Things To Achieve in Life",
+                             "owner_id": 1
+                            }
 
         self.item1 = Item(item_name="Be A Python and Js Ninja",
                           item_description="Be a pro in flask, Django, Angular, React and vue ",
@@ -38,7 +35,7 @@ class BaseTestCase(unittest.TestCase):
         self.item2 = Item(item_name="Be a rockstar",
                           item_description="Learn how to play slipknot songs proficiently",
                           owner_id=1,
-                          bucketlist_id=2)
+                          bucketlist_id=1)
 
         with self.app.app_context():
 

@@ -21,10 +21,9 @@ class TestAuthentication(BaseTestCase):
         }
 
         # Make the post request and get the response
-        response = self.client().post(URL_register, data=self.data, content_type="application/json")
-
+        response = self.client().post(URL_register, data=self.data)
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json()['message'], "You have succesfully created a user")
+        self.assertIn("You registered successfully. Please log in.", str(response.data))
 
     def test_user_registration_with_missing_username(self):
         """
@@ -32,16 +31,16 @@ class TestAuthentication(BaseTestCase):
          (POST request)
         """
         self.data = {
-            "username": " ",
+            "username": "",
             "email": "stan@gmail.com",
             "password": "stanbic"
         }
 
         # Make the post request and get the response
-        response = self.client().post(URL_register, data=self.data, content_type="application/json")
+        response = self.client().post(URL_register, data=self.data)
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()['error'], "username is missing")
+        self.assertIn("Missing username.", str(response.data))
 
     def test_user_registration_with_mising_email(self):
         """
@@ -50,15 +49,15 @@ class TestAuthentication(BaseTestCase):
         """
         self.data = {
             "username": "happy",
-            "email": " ",
+            "email": "",
             "password": "wapi"
         }
 
         # Make the post request and get the response
-        response = self.client().post(URL_register, data=self.data, content_type="application/json")
+        response = self.client().post(URL_register, data=self.data)
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()['error'], "Email address is missing")
+        self.assertIn("Missing email.", str(response.data))
 
     def test_user_registration_with_missing_password(self):
         """
@@ -68,31 +67,40 @@ class TestAuthentication(BaseTestCase):
         self.data = {
             "username": "blackie",
             "email": "blackman@gmail.com",
-            "password": " "
+            "password": ""
         }
 
         # Make the post request and get the response
-        response = self.client().post(URL_register, data=self.data, content_type="application/json")
+        response = self.client().post(URL_register, data=self.data)
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()['error'], "Password is missing")
+        self.assertIn("Missing Password", str(response.data))
 
     def test_cannot_create_user_with_already_existing_email_address(self):
         """
         Test API cannot register a user if email address is already in the system
          (POST request)
         """
-        self.data =  {
+        self.data = {
             "username": "snowpatrol",
             "email": "geo@gmail.com",
             "password": "openeyes"
         }
 
         # Make the post request and get the response
-        response = self.client().post(URL_register, data=self.data, content_type="application/json")
+        response = self.client().post(URL_register, data=self.data)
 
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()['error'], "email address already in use")
+        self.data = {
+            "username": "werun",
+            "email": "geo@gmail.com",
+            "password": "foofighters"
+        }
+
+        # Make the post request and get the response
+        response = self.client().post(URL_register, data=self.data)
+
+        self.assertEqual(response.status_code, 409)
+        self.assertIn("User already exists. Please login.", str(response.data))
 
     def test_cannot_create_user_with_already_existing_username(self):
         """
@@ -101,20 +109,37 @@ class TestAuthentication(BaseTestCase):
         """
         self.data = {
             "username": "georgreen",
-            "email": "redjump@gmail",
+            "email": "redjump@gmail.com",
             "password": "heaven"
         }
 
         # Make the post request and get the response
-        response = self.client().post(URL_register, data=self.data, content_type="application/json")
+        response = self.client().post(URL_register, data=self.data)
 
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()['error'], "username already Taken")
+        self.data = {
+            "username": "georgreen",
+            "email": "geo@gmail.com",
+            "password": "foofighters"
+        }
+
+        # Make the post request and get the response
+        response = self.client().post(URL_register, data=self.data)
+
+        self.assertEqual(response.status_code, 409)
+        self.assertIn("User already exists. Please login.", str(response.data))
 
     def test_succesfull_user_login(self):
         """
         Test API can sucesfully login a user (POST request)
         """
+        self.data = {
+            "username": "ktumbo",
+            "email": "ktumbo@gmail.com",
+            "password": "password"
+        }
+
+        # Make the post request and get the response
+        response = self.client().post(URL_register, data=self.data)
 
         self.data = {
             "email": "ktumbo@gmail.com",
@@ -122,10 +147,10 @@ class TestAuthentication(BaseTestCase):
         }
 
         # Make the post request and get the response
-        response = self.client().post(URL_register, data=self.data, content_type="application/json")
+        response = self.client().post(URL_Login, data=self.data)
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['Message'], "You have succesfully loggeg in")
+        self.assertIn("You logged in successfully.", str(response.data))
 
     def test_user_login_with_missing_email(self):
         """
@@ -137,10 +162,11 @@ class TestAuthentication(BaseTestCase):
         }
 
         # Make the post request and get the response
-        response = self.client().post(URL_register, data=self.data, content_type="application/json")
+        response = self.client().post(URL_Login, data=self.data)
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()['error'], "Email address is missing")
+        self.assertIn("Invalid email or password, Please try again", str(response.data))
+
 
     def test_user_login_with_nonexisting_or_wrong_email_address(self):
         """
@@ -153,10 +179,10 @@ class TestAuthentication(BaseTestCase):
         }
 
         # Make the post request and get the response
-        response = self.client().post(URL_register, data=self.data, content_type="application/json")
+        response = self.client().post(URL_Login, data=self.data)
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()['error'], "wrong email/password combination")
+        self.assertIn("Invalid email or password, Please try again", str(response.data))
 
     def test_user_login_with_missing_password(self):
         """
@@ -165,14 +191,14 @@ class TestAuthentication(BaseTestCase):
         """
         self.data = {
             "email": "ktumbo@gmail.com",
-            "password": " "
+            "password": ""
         }
 
         # Make the post request and get the response
-        response = self.client().post(URL_register, data=self.data, content_type="application/json")
+        response = self.client().post(URL_Login, data=self.data)
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()['error'], "Password is missing")
+        self.assertIn("Invalid email or password, Please try again", str(response.data))
 
     def test_user_login_with_wrong_password(self):
         """
@@ -185,7 +211,7 @@ class TestAuthentication(BaseTestCase):
         }
 
         # Make the post request and get the response
-        response = self.client().post(URL_register, data=self.data, content_type="application/json")
+        response = self.client().post(URL_Login, data=self.data)
 
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()['error'], "wrong email/password combination")
+        self.assertIn("Invalid email or password, Please try again", str(response.data))

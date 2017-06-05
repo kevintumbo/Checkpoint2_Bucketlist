@@ -9,15 +9,49 @@ from tests.base_test import BaseTestCase
 class BueketListItemsTests(BaseTestCase):
 
     """ Test cases for bucketlist item functionality """
+    def register_user(self):
+        user_data = {
+            "username": "ktumbo",
+            "email": "user@gmail.com",
+            "password": "user"
+        }
+        return self.client().post('/api/v1.0/auth/register', data=user_data)
+
+    def login_user(self):
+        user_data = {
+            "email": "user@gmail.com",
+            "password": "user"
+        }
+        return self.client().post('/api/v1.0/auth/login', data=user_data)
+
+    def bucketlist1(self):
+        self.register_user()
+        result = self.login_user()
+        access_token = json.loads(result.data.decode())['access_token']
+
+        self.data = {
+            "name":"Andela goals",
+            "description":"My achievement In Andela",
+            "owner_id": 1
+        }
+
+        # Make the post request and get the response
+        return self.client().post('/api/v1.0/bucketlists/', data=self.data,
+                                  headers=dict(Authorization="Bearer " + access_token))
 
     def test_succesful_creation_of_bucketlist_item(self):
 
         """
         Test API can succesfully create a bucketlist item (POST request)
         """
+        self.register_user()
+        result = self.login_user()
+        access_token = json.loads(result.data.decode())['access_token']
+        result2 = self.bucketlist1()
+        self.assertEqual(result2.status_code, 201)
 
         self.data = {
-            "item_name":" Trance Music",
+            "item_name":"Trance Music",
             "item_description":"Create deadmaus trance remakes",
             "owner_id": 1,
             "bucketlist_id":1
@@ -25,10 +59,11 @@ class BueketListItemsTests(BaseTestCase):
 
         # Make the post request and get the response
         response = self.client().post("/api/v1.0/bucketlists/1/items/",
-                                      data=self.data, content_type="application/json")
-
+                                      headers=dict(Authorization="Bearer " + access_token),
+                                      data=self.data)
+        print(vars(response))
         self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json()['message'], "bucketlist item succesfully created ")
+        self.assertIn("You have succesfully created a bucketlist item", str(response.data))
 
     def test_create_item_when_missing_title(self):
 
@@ -36,18 +71,25 @@ class BueketListItemsTests(BaseTestCase):
         Test API cannot create a bucketlist item when name is missing
         (POST request)
         """
+        self.register_user()
+        result = self.login_user()
+        access_token = json.loads(result.data.decode())['access_token']
+        result2 = self.bucketlist1()
+        self.assertEqual(result2.status_code, 201)
+
         self.data = {
-            "item_name":" ",
+            "item_name":"",
             "item_description":"Buy a guitar",
             "owner_id": 1,
-            "bucketlist_id":2
+            "bucketlist_id":1
         }
 
         # Make the post request and get the response
-        response = self.client().post("/api/v1.0/bucketlists/2/items/",
-                                      data=self.data, content_type="application/json")
+        response = self.client().post("/api/v1.0/bucketlists/1/items/",
+                                      data=self.data,
+                                      headers=dict(Authorization="Bearer " + access_token))
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()['error'], "Bucketlist item title missing")
+        self.assertIn("bucketlist item missing name", str(response.data))
 
     def test_create_item_when_name_is_in_invalid_format(self):
         """
@@ -55,18 +97,25 @@ class BueketListItemsTests(BaseTestCase):
         (POST request)
         """
 
+        self.register_user()
+        result = self.login_user()
+        access_token = json.loads(result.data.decode())['access_token']
+        result2 = self.bucketlist1()
+        self.assertEqual(result2.status_code, 201)
+
         self.data = {
-            "item_name":"slipknot tings",
-            "item_description":" *&*(^^^*^)*^))(&(",
+            "item_name":"*&*(^^^*^)*^))(&(",
+            "item_description":"Blackhole sun won't you wash me away?",
             "owner_id": 1,
-            "bucketlist_id":2
+            "bucketlist_id":1
         }
 
         # Make the post request and get the response
-        response = self.client().post("/api/v1.0/bucketlists/2/items/",
-                                      data=self.data, content_type="application/json")
+        response = self.client().post("/api/v1.0/bucketlists/1/items/",
+                                      data=self.data,
+                                      headers=dict(Authorization="Bearer " + access_token))
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()['error'], "Bucketlist item in invalid format")
+        self.assertIn("Bucketlist item in invalid format", str(response.data))
 
     def test_create_bucketlist_item_when_missing_description(self):
         """
@@ -74,24 +123,39 @@ class BueketListItemsTests(BaseTestCase):
         (POST request)
         """
 
+        self.register_user()
+        result = self.login_user()
+        access_token = json.loads(result.data.decode())['access_token']
+        result2 = self.bucketlist1()
+        self.assertEqual(result2.status_code, 201)
+
         self.data = {
             "item_name":"snowboard",
-            "item_description":" ",
+            "item_description":"",
             "owner_id": 1,
             "bucketlist_id":1
         }
 
         # Make the post request and get the response
         response = self.client().post("/api/v1.0/bucketlists/1/items/",
-                                      data=self.data, content_type="application/json")
+                                      data=self.data,
+                                      headers=dict(Authorization="Bearer " + access_token))
+
         self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()['error'], "Bucketlist item missing description")
+        self.assertIn("Bucketlist item description missing", str(response.data))
 
     def test_creation_of_duplicate_bucketlist_item(self):
 
         """
         Test API cannot create a duplicate bucketlist item (POST request)
         """
+
+        self.register_user()
+        result = self.login_user()
+        access_token = json.loads(result.data.decode())['access_token']
+        result2 = self.bucketlist1()
+        self.assertEqual(result2.status_code, 201)
+
         self.data = {
             "item_name":"Be A Python and Js Ninja",
             "item_description":"Be a pro in flask, Django, Angular, React and vue",
@@ -100,17 +164,36 @@ class BueketListItemsTests(BaseTestCase):
         }
 
         # Make the post request and get the response
-        response = self.client().post("/api/v1.0/bucketlists/1/items/1",
-                                      data=self.data, content_type="application/json")
+        response = self.client().post("/api/v1.0/bucketlists/1/items/",
+                                      data=self.data,
+                                      headers=dict(Authorization="Bearer " + access_token))
+        self.data = {
+            "item_name":"Be A Python and Js Ninja",
+            "item_description":"Be a pro in flask, Django, Angular, React and vue",
+            "owner_id": 1,
+            "bucketlist_id":1
+        }
 
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()['message'], "Bucketlist item already exists")
+        # Make the post request and get the response
+        response = self.client().post("/api/v1.0/bucketlists/1/items/",
+                                      data=self.data,
+                                      headers=dict(Authorization="Bearer " + access_token))
+
+        self.assertEqual(response.status_code, 409)
+        self.assertIn("That bucketlist item already exists", str(response.data))
 
     def test_creation_of_bucketlist_item_in_nonexistant_bucketlist(self):
 
         """
         Test API cannot create a bucketlist item in a bucketlist that doesn't exist(POST request)
         """
+
+        self.register_user()
+        result = self.login_user()
+        access_token = json.loads(result.data.decode())['access_token']
+        result2 = self.bucketlist1()
+        self.assertEqual(result2.status_code, 201)
+
         self.data = {
             "item_name":"wagwan",
             "item_description":"Testing 1 2",
@@ -120,85 +203,206 @@ class BueketListItemsTests(BaseTestCase):
 
         # Make the post request and get the response
         response = self.client().post("/api/v1.0/bucketlists/67/items/",
-                                      data=self.data, content_type="application/json")
+                                      data=self.data,
+                                      headers=dict(Authorization="Bearer " + access_token))
 
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json()['message'], "Bucketlist does not exist")
+        self.assertIn("Bucketlist does not exist", str(response.data))
 
     def test_update_bucketlist_item(self):
         """
         Test API can edit a bucketlist item (PUT request)
         """
+        self.register_user()
+        result = self.login_user()
+        access_token = json.loads(result.data.decode())['access_token']
+        result2 = self.bucketlist1()
+        self.assertEqual(result2.status_code, 201)
+
+        self.data = {
+            "item_name":"Be A Python and Js Ninja",
+            "item_description":"Be a pro in flask, Django, Angular, React and vue",
+            "owner_id": 1,
+            "bucketlist_id":1
+        }
+
+        # Make the post request and get the response
+        response = self.client().post("/api/v1.0/bucketlists/1/items/",
+                                      data=self.data,
+                                      headers=dict(Authorization="Bearer " + access_token))
+
         self.data = {
             "item_name":"Be A Python and Ruby Ninja(update)",
-            "item_description":"Be a pro in flask, Django and Ruby on Rails"
+            "item_description":"Be a pro in flask, Django and Ruby on Rails",
+            "is_done": 1
         }
 
         # Make the post request and get the response
         response = self.client().put("/api/v1.0/bucketlists/1/items/1",
-                                     data=self.data, content_type="application/json")
+                                     data=self.data,
+                                     headers=dict(Authorization="Bearer " + access_token))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['Message'], "You have succesfully updated bucketlist item")
+        self.assertIn("You have succesfully updated a bucketlist item", str(response.data))
 
     def test_update_nonexisting_bucketlist_item(self):
         """
         Test API cannot update a bucketlist item that doesn't exist (PUT request)
         """
+
+        self.register_user()
+        result = self.login_user()
+        access_token = json.loads(result.data.decode())['access_token']
+        result2 = self.bucketlist1()
+        self.assertEqual(result2.status_code, 201)
+
         self.data = {
             "item_name":"Be A Python and Js Ninja",
             "item_description":"Be a pro in flask, Django, Angular, React and vue"
         }
 
         # Make the post request and get the response
-        response = self.client().put("/api/v1.0/bucketlists/1/items/5778676",
-                                     data=self.data, content_type="application/json")
+        response = self.client().put("/api/v1.0/bucketlists/1/items/100503953",
+                                     data=self.data,
+                                     headers=dict(Authorization="Bearer " + access_token))
 
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json()['error'], "bucketlist item does not exist")
+        self.assertIn("Bucketlist item does not exist", str(response.data))
 
 
     def test_can_delete_bucketlist_item(self):
         """
         Test API can delete an existing bucketlist (DELETE request)
         """
-        response = self.client().delete("/api/v1.0/bucketlists/2")
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(response.json()['message'], "bucketlist item has been deleted")
+
+        self.register_user()
+        result = self.login_user()
+        access_token = json.loads(result.data.decode())['access_token']
+        result2 = self.bucketlist1()
+        self.assertEqual(result2.status_code, 201)
+
+        self.data = {
+            "item_name":"Be A Python and Js Ninja",
+            "item_description":"Be a pro in flask, Django, Angular, React and vue",
+            "owner_id": 1,
+            "bucketlist_id":1
+        }
+
+        # Make the post request and get the response
+        response = self.client().post("/api/v1.0/bucketlists/1/items/",
+                                      data=self.data,
+                                      headers=dict(Authorization="Bearer " + access_token))
+
+        response = self.client().delete("/api/v1.0/bucketlists/1/items/1",
+                                        headers=dict(Authorization="Bearer " + access_token))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("bucketlist item 1 deleted successfull", str(response.data))
 
     def test_delete_nonexistant_bucketlist_item(self):
         """
         Test API cannot delete a bucketlist item that does not exist (DELETE request)
         """
-        response = self.client().delete("/api/v1.0/bucketlists/2")
+        self.register_user()
+        result = self.login_user()
+        access_token = json.loads(result.data.decode())['access_token']
+        result2 = self.bucketlist1()
+        self.assertEqual(result2.status_code, 201)
+
+        self.data = {
+            "item_name":"Be A Python and Js Ninja",
+            "item_description":"Be a pro in flask, Django, Angular, React and vue",
+            "owner_id": 1,
+            "bucketlist_id":1
+        }
+
+        # Make the post request and get the response
+        response = self.client().post("/api/v1.0/bucketlists/1/items/",
+                                      data=self.data,
+                                      headers=dict(Authorization="Bearer " + access_token))
+
+        response = self.client().delete("/api/v1.0/bucketlists/1/items/9980803",
+                                        headers=dict(Authorization="Bearer " + access_token))
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json()['error'], "bucketlist item does not exist")
+        self.assertIn("Bucketlist item does not exist", str(response.data))
 
     def test_change_item_status_to_done(self):
         """
         Test API can change status of bucketlist item to done (PUT request)
         """
+        self.register_user()
+        result = self.login_user()
+        access_token = json.loads(result.data.decode())['access_token']
+        result2 = self.bucketlist1()
+        self.assertEqual(result2.status_code, 201)
+
         self.data = {
+            "item_name":"Be A Python and Js Ninja",
+            "item_description":"Be a pro in flask, Django, Angular, React and vue",
+            "owner_id": 1,
+            "bucketlist_id":1
+        }
+
+        # Make the post request and get the response
+        response = self.client().post("/api/v1.0/bucketlists/1/items/",
+                                      data=self.data,
+                                      headers=dict(Authorization="Bearer " + access_token))
+
+        self.data = {
+            "item_name":"Be A Python and Ruby Ninja",
+            "item_description":"Be a pro in flask, Django and Ruby on Rails",
             "is_done": 1
         }
 
         # Make the post request and get the response
-        response = self.client().put("/api/v1.0/bucketlists/1/items/2",
-                                     data=self.data, content_type="application/json")
-
+        response = self.client().put("/api/v1.0/bucketlists/1/items/1",
+                                     data=self.data,
+                                     headers=dict(Authorization="Bearer " + access_token))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['message'], "item updated to done")
+        self.assertIn("You have succesfully updated a bucketlist item", str(response.data))
 
     def test_change_item_status_to_not_done(self):
         """
         Test API can change status a bucketlist item to not done (PUT request)
         """
+        self.register_user()
+        result = self.login_user()
+        access_token = json.loads(result.data.decode())['access_token']
+        result2 = self.bucketlist1()
+        self.assertEqual(result2.status_code, 201)
+
         self.data = {
+            "item_name":"Be A Python and Js Ninja",
+            "item_description":"Be a pro in flask, Django, Angular, React and vue",
+            "owner_id": 1,
+            "bucketlist_id":1
+        }
+
+        # Make the post request and get the response
+        response = self.client().post("/api/v1.0/bucketlists/1/items/",
+                                      data=self.data,
+                                      headers=dict(Authorization="Bearer " + access_token))
+
+        self.data = {
+            "item_name":"Be A Python and Ruby Ninja",
+            "item_description":"Be a pro in flask, Django and Ruby on Rails",
+            "is_done": 1
+        }
+
+        # Make the post request and get the response
+        response = self.client().put("/api/v1.0/bucketlists/1/items/1",
+                                     data=self.data,
+                                     headers=dict(Authorization="Bearer " + access_token))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("You have succesfully updated a bucketlist item", str(response.data))
+
+        self.data = {
+            "item_name":"Be A Python and Ruby Ninja",
+            "item_description":"Be a pro in flask, Django and Ruby on Rails",
             "is_done": 0
         }
 
         # Make the post request and get the response
         response = self.client().put("/api/v1.0/bucketlists/1/items/1",
-                                     data=self.data, content_type="application/json")
-
+                                     data=self.data,
+                                     headers=dict(Authorization="Bearer " + access_token))
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()['message'], "item updated to not done")
+        self.assertIn("You have succesfully updated a bucketlist item", str(response.data))
