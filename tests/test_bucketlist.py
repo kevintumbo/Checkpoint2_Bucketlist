@@ -138,17 +138,44 @@ class BucketListTests(BaseTestCase):
         self.assertIn("That bucketlist already exists", str(response2.data))
 
     def test_retrive_all_bucketlists(self):
-        pass
+        """
+        Test API can return a list of all bucketlists
+        (GET request)
+        """
+
+        self.register_user()
+        result = self.login_user()
+        access_token = json.loads(result.data.decode())['access_token']
+        # Make the post request and get the response
+        response = self.client().post(URL_bucketlist,
+                                      data=self.bucketlist,
+                                      headers=dict(Authorization="Bearer " + access_token))
+        response = self.client().post(URL_bucketlist,
+                                      data=self.bucketlists2,
+                                      headers=dict(Authorization="Bearer " + access_token))
+        response = self.client().get("/api/v1.0/bucketlists/",
+                                     headers=dict(Authorization="Bearer " + access_token))
+        self.assertIn("Work goals", str(response.data))
+        self.assertIn("Life Goals", str(response.data))
 
     def test_get_bucketlist_using_id(self):
         """
         Test API can return an existing bucketlist using id as a parameter
         (GET request)
         """
-        response = self.client().get("/api/v1.0/bucketlists/1")
+        self.register_user()
+        result = self.login_user()
+        access_token = json.loads(result.data.decode())['access_token']
+        # Make the post request and get the response
+        response = self.client().post(URL_bucketlist,
+                                      data=self.bucketlist,
+                                      headers=dict(Authorization="Bearer " + access_token))
+
+        response = self.client().get("/api/v1.0/bucketlists/1",
+                                     headers=dict(Authorization="Bearer " + access_token))
         self.assertEqual(response.status_code, 200)
-        self.assertIn(response.json()['name'], "Work goals")
-        self.assertIn(response.json()['description'], "Things To achieve at work")
+        self.assertIn("Work goals", str(response.data))
+        self.assertIn("Things To achieve at work", str(response.data))
 
     def test_can_get_bucketlist_by_searching_name(self):
         """
@@ -173,15 +200,6 @@ class BucketListTests(BaseTestCase):
                                      headers=dict(Authorization="Bearer " + access_token))
         self.assertEqual(response.status_code, 404)
         self.assertIn("404 Not Found", str(response.data))
-
-    def test_get_all_bucketlists(self):
-        """
-        Test API returns error if missing id or name in url
-        (GET request)
-        """
-        response = self.client().get("/api/v1.0/bucketlists/")
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(response.json()['error'], "missing bucketlist id or name")
 
     def test_update_bucketlist(self):
         """
