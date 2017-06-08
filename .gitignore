@@ -19,6 +19,7 @@ Thumbs.db
 # Application specific files
 cp2-venv
 cover
+instance/bucketlists.db
 
 # Database files
 *.db
