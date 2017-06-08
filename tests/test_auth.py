@@ -165,17 +165,17 @@ class TestAuthentication(BaseTestCase):
         Test API can sucesfully login a user (POST request)
         """
         self.data = {
-            "username": "ktumbo",
-            "email": "ktumbo@gmail.com",
-            "password": "password"
+            "username": "georgreen",
+            "email": "redjump@gmail.com",
+            "password": "heaven"
         }
 
         # Make the post request and get the response
         response = self.client().post(URL_register, data=self.data)
 
         self.data = {
-            "email": "ktumbo@gmail.com",
-            "password": "password"
+            "email": "redjump@gmail.com",
+            "password": "heaven"
         }
 
         # Make the post request and get the response

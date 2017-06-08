@@ -5,29 +5,10 @@ from tests.base_test import BaseTestCase
 class BucketListTests(BaseTestCase):
     """ Test cases for Bucketlist functionality"""
 
-    def register_user(self):
-        user_data = {
-            "username": "ktumbo",
-            "email": "user@gmail.com",
-            "password": "user"
-        }
-        return self.client().post('/api/v1.0/auth/register', data=user_data)
-
-    def login_user(self):
-        user_data = {
-            "email": "user@gmail.com",
-            "password": "user"
-        }
-        return self.client().post('/api/v1.0/auth/login', data=user_data)
-
-
     def test_create_bucketlist_succesfully(self):
         """
         Test API can create a bucketlist (POST request)
         """
-        self.register_user()
-        result = self.login_user()
-        access_token = json.loads(result.data.decode())['access_token']
 
         self.data = {
             "name":"Midlife goals",
@@ -38,7 +19,7 @@ class BucketListTests(BaseTestCase):
         # Make the post request and get the response
         response = self.client().post('/api/v1.0/bucketlists/',
                                       data=self.data,
-                                      headers=dict(Authorization="Bearer " + access_token))
+                                      headers=self.my_header)
         self.assertEqual(response.status_code, 201)
         self.assertIn("You have succesfully created a bucketlist", str(response.data))
 
@@ -46,8 +27,6 @@ class BucketListTests(BaseTestCase):
         """
         Test API cannot create a bucketlist without token
         """
-        self.register_user()
-        result = self.login_user()
         access_token = "gjlnrngnrganerngrng596436843tdkfdsfkndks"
 
         self.data = {
@@ -61,14 +40,11 @@ class BucketListTests(BaseTestCase):
                                       headers=dict(Authorization="Bearer " + access_token))
         self.assertEqual(response.status_code, 401)
         self.assertIn("Invalid Token", str(response.data))
-    
+
     def test_invalid_bucketlist_name_format(self):
         """
         Test API cannot create a bucketlist when name is invalid format (POST request)
         """
-        self.register_user()
-        result = self.login_user()
-        access_token = json.loads(result.data.decode())['access_token']
 
         self.data = {
             "name":"))(*",
@@ -78,7 +54,7 @@ class BucketListTests(BaseTestCase):
         # Make the post request and get the response
         response = self.client().post('/api/v1.0/bucketlists/',
                                       data=self.data,
-                                      headers=dict(Authorization="Bearer " + access_token))
+                                      headers=self.my_header)
         self.assertEqual(response.status_code, 400)
         self.assertIn("Sorry Invalid name format. please put a valid name", str(response.data))
 
@@ -86,9 +62,6 @@ class BucketListTests(BaseTestCase):
         """
         Test API cannot create a bucketlist when name is missing (POST request)
         """
-        self.register_user()
-        result = self.login_user()
-        access_token = json.loads(result.data.decode())['access_token']
 
         self.data = {
             "description":"Things to do in 2017",
@@ -97,7 +70,7 @@ class BucketListTests(BaseTestCase):
 
         # Make the post request and get the response
         response = self.client().post('/api/v1.0/bucketlists/', data=self.data,
-                                      headers=dict(Authorization="Bearer " + access_token))
+                                      headers=self.my_header)
         self.assertEqual(response.status_code, 400)
         self.assertIn("bucketlist missing name", str(response.data))
 
@@ -108,10 +81,6 @@ class BucketListTests(BaseTestCase):
         (POST request)
         """
 
-        self.register_user()
-        result = self.login_user()
-        access_token = json.loads(result.data.decode())['access_token']
-
         self.data = {
             "name":"20:20 vision",
             "owner_id": 1
@@ -119,7 +88,7 @@ class BucketListTests(BaseTestCase):
 
         # Make the post request and get the response
         response = self.client().post('/api/v1.0/bucketlists/', data=self.data,
-                                      headers=dict(Authorization="Bearer " + access_token))
+                                      headers=self.my_header)
 
         self.assertEqual(response.status_code, 400)
         self.assertIn("Bucketlist desscription missing", str(response.data))
@@ -129,10 +98,6 @@ class BucketListTests(BaseTestCase):
         Test API cannot create a duplicate bucketlist (POST request)
         """
 
-        self.register_user()
-        result = self.login_user()
-        access_token = json.loads(result.data.decode())['access_token']
-
         self.data = {
             "name":"Midlife goals",
             "description":"My achievement by 40",
@@ -141,7 +106,7 @@ class BucketListTests(BaseTestCase):
 
         # Make the post request and get the response
         response1 = self.client().post('/api/v1.0/bucketlists/', data=self.data,
-                                       headers=dict(Authorization="Bearer " + access_token))
+                                       headers=self.my_header)
 
         self.data2 = {
             "name":"Midlife goals",
@@ -149,7 +114,7 @@ class BucketListTests(BaseTestCase):
             "owner_id": 1
         }
         response2 = self.client().post('/api/v1.0/bucketlists/', data=self.data,
-                                       headers=dict(Authorization="Bearer " + access_token))
+                                       headers=self.my_header)
 
         self.assertEqual(response2.status_code, 409)
         self.assertIn("That bucketlist already exists", str(response2.data))
@@ -160,18 +125,15 @@ class BucketListTests(BaseTestCase):
         (GET request)
         """
 
-        self.register_user()
-        result = self.login_user()
-        access_token = json.loads(result.data.decode())['access_token']
         # Make the post request and get the response
         response = self.client().post('/api/v1.0/bucketlists/',
                                       data=self.bucketlist,
-                                      headers=dict(Authorization="Bearer " + access_token))
+                                      headers=self.my_header)
         response = self.client().post('/api/v1.0/bucketlists/',
                                       data=self.bucketlists2,
-                                      headers=dict(Authorization="Bearer " + access_token))
+                                      headers=self.my_header)
         response = self.client().get("/api/v1.0/bucketlists/",
-                                     headers=dict(Authorization="Bearer " + access_token))
+                                     headers=self.my_header)
         self.assertIn("Work goals", str(response.data))
         self.assertIn("Life Goals", str(response.data))
 
@@ -180,34 +142,28 @@ class BucketListTests(BaseTestCase):
         Test API can return an existing bucketlist using id as a parameter
         (GET request)
         """
-        self.register_user()
-        result = self.login_user()
-        access_token = json.loads(result.data.decode())['access_token']
         # Make the post request and get the response
         response = self.client().post('/api/v1.0/bucketlists/',
                                       data=self.bucketlist,
-                                      headers=dict(Authorization="Bearer " + access_token))
+                                      headers=self.my_header)
 
         response = self.client().get("/api/v1.0/bucketlists/1",
-                                     headers=dict(Authorization="Bearer " + access_token))
+                                     headers=self.my_header)
         self.assertEqual(response.status_code, 200)
-        self.assertIn("Work goals", str(response.data))
-        self.assertIn("Things To achieve at work", str(response.data))
+        self.assertIn("IEBC Goals", str(response.data))
+        self.assertIn("Things IEBC needs to achieve", str(response.data))
 
     def test_can_get_bucketlist_by_searching_name(self):
         """
         Test Api can retrive existing bucketlist using name as a parameter
         (GET request)
         """
-        self.register_user()
-        result = self.login_user()
-        access_token = json.loads(result.data.decode())['access_token']
         # Make the post request and get the response
         response = self.client().post('/api/v1.0/bucketlists/',
                                       data=self.bucketlists2,
-                                      headers=dict(Authorization="Bearer " + access_token))
+                                      headers=self.my_header)
         response = self.client().get("/api/v1.0/bucketlists/?q=life",
-                                     headers=dict(Authorization="Bearer " + access_token))
+                                     headers=self.my_header)
         self.assertEqual(response.status_code, 200)
         self.assertIn("Life Goals", str(response.data))
         self.assertIn("Things To Achieve in Life", str(response.data))
@@ -217,12 +173,9 @@ class BucketListTests(BaseTestCase):
         Test API returns error message if a bucketlist does not exist
         (GET request)
         """
-        self.register_user()
-        result = self.login_user()
-        access_token = json.loads(result.data.decode())['access_token']
 
         response = self.client().get("/api/v1.0/bucketlists/66686768",
-                                     headers=dict(Authorization="Bearer " + access_token))
+                                     headers=self.my_header)
         self.assertEqual(response.status_code, 404)
         self.assertIn("404 Not Found", str(response.data))
 
@@ -230,9 +183,6 @@ class BucketListTests(BaseTestCase):
         """
         Test API can create update bucketlist (PUT request)
         """
-        self.register_user()
-        result = self.login_user()
-        access_token = json.loads(result.data.decode())['access_token']
 
         self.data = {
             "name":"Update goals",
@@ -242,7 +192,7 @@ class BucketListTests(BaseTestCase):
 
         response = self.client().post('/api/v1.0/bucketlists/',
                                       data=self.data,
-                                      headers=dict(Authorization="Bearer " + access_token))
+                                      headers=self.my_header)
         self.data = {
             "name":"Update work goals",
             "description":"Things To achieve at work(updated)",
@@ -251,7 +201,7 @@ class BucketListTests(BaseTestCase):
 
         response = self.client().put("/api/v1.0/bucketlists/1",
                                      data=self.data,
-                                     headers=dict(Authorization="Bearer " + access_token))
+                                     headers=self.my_header)
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("You have succesfully updated a bucketlist", str(response.data))
@@ -261,9 +211,6 @@ class BucketListTests(BaseTestCase):
         Test API cannot update a bucketlist if bucketlist is missing or does not exist
         (PUT request)
         """
-        self.register_user()
-        result = self.login_user()
-        access_token = json.loads(result.data.decode())['access_token']
 
         self.data = {
             "name":"Update work goals",
@@ -272,7 +219,7 @@ class BucketListTests(BaseTestCase):
         }
 
         response = self.client().put("/api/v1.0/bucketlists/1088", data=self.data,
-                                     headers=dict(Authorization="Bearer " + access_token))
+                                     headers=self.my_header)
         self.assertEqual(response.status_code, 404)
         self.assertIn("404 Not Found", str(response.data))
 
@@ -281,20 +228,16 @@ class BucketListTests(BaseTestCase):
         Test API cannot update a bucketlist if bucketlist is missing name
         (PUT request)
         """
-        self.register_user()
-        result = self.login_user()
-        access_token = json.loads(result.data.decode())['access_token']
         response = self.client().post('/api/v1.0/bucketlists/',
-                                      data=self.bucketlist,
-                                      headers=dict(Authorization="Bearer " + access_token))
-
+                                      data=self.bucketlists2,
+                                      headers=self.my_header)
         self.data = {
             "description":"Things To achieve at work(updated)",
             "owner_id": 1
         }
 
         response = self.client().put("/api/v1.0/bucketlists/1", data=self.data,
-                                     headers=dict(Authorization="Bearer " + access_token))
+                                     headers=self.my_header)
         self.assertEqual(response.status_code, 400)
         self.assertIn("bucketlist missing name", str(response.data))
 
@@ -303,20 +246,16 @@ class BucketListTests(BaseTestCase):
         Test API cannot update a bucketlist if bucketlist is missing description
         (PUT request)
         """
-        self.register_user()
-        result = self.login_user()
-        access_token = json.loads(result.data.decode())['access_token']
         response = self.client().post('/api/v1.0/bucketlists/',
-                                      data=self.bucketlist,
-                                      headers=dict(Authorization="Bearer " + access_token))
-
+                                      data=self.bucketlists2,
+                                      headers=self.my_header)
         self.data = {
             "name":"Update work goals",
             "owner_id": 1
         }
 
         response = self.client().put("/api/v1.0/bucketlists/1", data=self.data,
-                                     headers=dict(Authorization="Bearer " + access_token))
+                                     headers=self.my_header)
         self.assertEqual(response.status_code, 400)
         self.assertIn("Bucketlist desscription missing", str(response.data))
     
@@ -325,13 +264,9 @@ class BucketListTests(BaseTestCase):
         Test API cannot update a bucketlist if bucketlist is missing description
         (PUT request)
         """
-        self.register_user()
-        result = self.login_user()
-        access_token = json.loads(result.data.decode())['access_token']
         response = self.client().post('/api/v1.0/bucketlists/',
-                                      data=self.bucketlist,
-                                      headers=dict(Authorization="Bearer " + access_token))
-
+                                      data=self.bucketlists2,
+                                      headers=self.my_header)
         self.data = {
             "name":"&&(&)((&&(&",
             "description":"Things To achieve at work(updated)",
@@ -339,7 +274,7 @@ class BucketListTests(BaseTestCase):
         }
 
         response = self.client().put("/api/v1.0/bucketlists/1", data=self.data,
-                                     headers=dict(Authorization="Bearer " + access_token))
+                                     headers=self.my_header)
         self.assertEqual(response.status_code, 400)
         self.assertIn("Sorry Invalid name format. please put a valid name", str(response.data))
 
@@ -348,21 +283,12 @@ class BucketListTests(BaseTestCase):
         Test API can delete a bucketlist
         (DELETE request)
         """
-        self.register_user()
-        result = self.login_user()
-        access_token = json.loads(result.data.decode())['access_token']
-
-        self.data = {
-            "name":"Update work goals",
-            "description":"Things To achieve at work(updated)",
-            "owner_id": 1
-        }
-
-        response = self.client().post('/api/v1.0/bucketlists/', data=self.data,
-                                      headers=dict(Authorization="Bearer " + access_token))
+        response = self.client().post('/api/v1.0/bucketlists/',
+                                      data=self.bucketlists2,
+                                      headers=self.my_header)
 
         response2 = self.client().delete("/api/v1.0/bucketlists/1",
-                                         headers=dict(Authorization="Bearer " + access_token))
+                                         headers=self.my_header)
         self.assertEqual(response2.status_code, 200)
         self.assertIn("bucketlist 1 deleted successfully", str(response2.data))
 
@@ -370,11 +296,8 @@ class BucketListTests(BaseTestCase):
         """
         Test API cannot delete a bucketlist that doesn't exist (DELETE request)
         """
-        self.register_user()
-        result = self.login_user()
-        access_token = json.loads(result.data.decode())['access_token']
 
         response = self.client().delete("/api/v1.0/bucketlists/290834",
-                                        headers=dict(Authorization="Bearer " + access_token))
+                                        headers=self.my_header)
         self.assertEqual(response.status_code, 404)
         self.assertIn("404 Not Found", str(response.data))

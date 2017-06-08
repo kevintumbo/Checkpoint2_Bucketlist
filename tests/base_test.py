@@ -27,6 +27,11 @@ class BaseTestCase(unittest.TestCase):
                              "description":"Things To Achieve in Life",
                              "owner_id": 1
                             }
+        
+        self.bucketlists3 = {"name":"IEBC Goals",
+                             "description":"Things IEBC needs to achieve",
+                             "owner_id": 1
+                            }
 
         self.item1 = {"item_name":"Be A Python and Js Ninja",
                       "item_description":"Be a pro in flask, Django, Angular, React and vue ",
@@ -43,6 +48,20 @@ class BaseTestCase(unittest.TestCase):
         with self.app.app_context():
 
             db.create_all()
+            # register and log in user
+            base_response = self.client().post('/api/v1.0/auth/register', data=self.user1)
+            self.user_login = {
+                "email": "ktumbo@gmail.com",
+                "password": "password"
+            }
+            base_result = self.client().post('/api/v1.0/auth/login', data=self.user_login)
+            access_token = json.loads(base_result.data.decode())['access_token']
+            self.my_header = dict(Authorization="Bearer " + access_token)
+            # create bucketlist
+            bucket_response = self.client().post('/api/v1.0/bucketlists/',
+                                                 data=self.bucketlists3,
+                                                 headers=self.my_header)
+
 
     def tearDown(self):
         """ removes resources once tests have run """
