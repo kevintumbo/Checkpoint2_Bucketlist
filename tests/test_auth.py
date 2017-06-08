@@ -247,3 +247,8 @@ class TestAuthentication(BaseTestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertIn("Invalid email or password, Please try again", str(response.data))
+
+    def test_generation_of_access_token(self):
+        result = self.client().post('/api/v1.0/auth/login', data=self.user_login)
+        access_token = json.loads(result.data.decode())['access_token']
+        self.assertIsNotNone(access_token)
