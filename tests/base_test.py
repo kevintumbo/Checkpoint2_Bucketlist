@@ -12,9 +12,10 @@ class BaseTestCase(unittest.TestCase):
         self.app = create_app(config_name="development")
         self.client = self.app.test_client
 
-        self.user1 = User(username="ktumbo",
-                          email="ktumbo@gmail.com",
-                          password="password")
+        self.user1 = {"username":"ktumbo",
+                      "email":"ktumbo@gmail.com",
+                      "password":"password"
+                     }
 
 
         self.bucketlist = {"name":"Work goals",
@@ -27,15 +28,17 @@ class BaseTestCase(unittest.TestCase):
                              "owner_id": 1
                             }
 
-        self.item1 = Item(item_name="Be A Python and Js Ninja",
-                          item_description="Be a pro in flask, Django, Angular, React and vue ",
-                          owner_id=1,
-                          bucketlist_id=1)
+        self.item1 = {"item_name":"Be A Python and Js Ninja",
+                      "item_description":"Be a pro in flask, Django, Angular, React and vue ",
+                      "owner_id": 1,
+                      "bucketlist_id": 1
+                     }
 
-        self.item2 = Item(item_name="Be a rockstar",
-                          item_description="Learn how to play slipknot songs proficiently",
-                          owner_id=1,
-                          bucketlist_id=1)
+        self.item2 = {"item_name":"Be a rockstar",
+                      "item_description":"Learn how to play slipknot songs proficiently",
+                      "owner_id":1,
+                      "bucketlist_id":1
+                     }
 
         with self.app.app_context():
 

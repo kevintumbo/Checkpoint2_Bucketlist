@@ -127,6 +127,38 @@ class TestAuthentication(BaseTestCase):
 
         self.assertEqual(response.status_code, 409)
         self.assertIn("User already exists. Please login.", str(response.data))
+    
+    def test_cannot_create_user_with_invalid_username(self):
+        """
+        Test API cannot register a user if username is invalid format
+         (POST request)
+        """
+        self.data = {
+            "username": ")()#%@#%@",
+            "email": "redjump@gmail.com",
+            "password": "heaven"
+        }
+
+        # Make the post request and get the response
+        response = self.client().post(URL_register, data=self.data)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Sorry Invalid Username format. please put a valid username", str(response.data))
+
+    def test_cannot_create_user_with_invalid_email(self):
+        """
+        Test API cannot register a user if email is invalid format
+         (POST request)
+        """
+        self.data = {
+            "username": "georgreen",
+            "email": "redjump@gmail",
+            "password": "heaven"
+        }
+
+        # Make the post request and get the response
+        response = self.client().post(URL_register, data=self.data)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Sorry Invalid email. please put a valid email", str(response.data))
 
     def test_succesfull_user_login(self):
         """

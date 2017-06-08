@@ -1,10 +1,6 @@
 import json
 from tests.base_test import BaseTestCase
 
-# POST /bucketlists/<id>/items/
-# PUT /bucketlists/<id>/items/<item_id>
-# DELETE /bucketlists/<id>/items/<item_id>
-
 
 class BueketListItemsTests(BaseTestCase):
 
@@ -115,7 +111,7 @@ class BueketListItemsTests(BaseTestCase):
                                       data=self.data,
                                       headers=dict(Authorization="Bearer " + access_token))
         self.assertEqual(response.status_code, 400)
-        self.assertIn("Bucketlist item in invalid format", str(response.data))
+        self.assertIn("Sorry Invalid name format. please put a valid name", str(response.data))
 
     def test_create_bucketlist_item_when_missing_description(self):
         """
@@ -232,7 +228,7 @@ class BueketListItemsTests(BaseTestCase):
                                       headers=dict(Authorization="Bearer " + access_token))
 
         self.data = {
-            "item_name":"Be A Python and Ruby Ninja(update)",
+            "item_name":"Be A Python and Ruby Ninja updated",
             "item_description":"Be a pro in flask, Django and Ruby on Rails",
             "is_done": 1
         }
