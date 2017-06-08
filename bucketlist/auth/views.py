@@ -1,3 +1,4 @@
+import re
 from flask.views import MethodView
 from flask import make_response, request, jsonify
 from bucketlist.models import User
@@ -25,21 +26,38 @@ class RegistrationView(MethodView):
                     response = {
                         'message': 'Missing Password.'
                     }
-                     # return a response notifying the user that credentials are missing
+                     # return a response notifying the user password is missing
                     return make_response(jsonify(response)), 400
 
                 if not username:
                     response = {
                         'message': 'Missing username.'
                     }
-                     # return a response notifying the user that credentials are missing
+                     # return a response notifying the user that username are missing
                     return make_response(jsonify(response)), 400
 
                 if not email:
                     response = {
                         'message': 'Missing email.'
                     }
-                     # return a response notifying the user that credentials are missing
+                     # return a response notifying the user that email are missing
+                    return make_response(jsonify(response)), 400
+                
+                match = re.match('^[_a-z0-9-]+(\.[_a-z0-9-]+)*@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$', email)
+
+                if match is None:
+                    response = {
+                        'message': 'Sorry Invalid email. please put a valid email'
+                    }
+                     # return a response notifying the user that email is invalid
+                    return make_response(jsonify(response)), 400
+
+                check_username = re.match('^[a-zA-Z0-9_.-]+$', username)
+                if check_username is None:
+                    response = {
+                        'message': 'Sorry Invalid Username format. please put a valid username'
+                    }
+                     # return a response notifying the user that credentials username is invalid
                     return make_response(jsonify(response)), 400
 
                 user = User(username=username, email=email, password=password)
@@ -102,14 +120,14 @@ class LoginView(MethodView):
 
 registration_view = RegistrationView.as_view('register_view')
 login_view = LoginView.as_view('login_view')
-# Define the rule for the registration url --->  /auth/register
+# Define the rule for the registration url --->  api/v1.0/auth/register
 # Then add the rule to the blueprint
 auth_blueprint.add_url_rule(
     '/api/v1.0/auth/register',
     view_func=registration_view,
     methods=['POST'])
 
-# Define the rule for the registration url --->  /auth/login
+# Define the rule for the registration url --->  api/v1.0/auth/login
 # Then add the rule to the blueprint
 auth_blueprint.add_url_rule(
     '/api/v1.0/auth/login',

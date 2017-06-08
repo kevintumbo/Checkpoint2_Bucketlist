@@ -75,7 +75,9 @@ class User(db.Model):
         db.session.commit()
 
     def __repr__(self):
+        
         return '<User %r>' % self.username
+
 
 class Bucketlist(db.Model):
 
@@ -86,17 +88,24 @@ class Bucketlist(db.Model):
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.Text)
     date_created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    date_modifed = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    items = db.relationship('Item', backref='bucketlist', lazy='dynamic')
+    date_modifed = db.Column(db.DateTime, default=datetime.datetime.utcnow,
+                             onupdate=datetime.datetime.utcnow)
+    items = db.relationship('Item', backref='bucketlist', lazy='dynamic', cascade='delete')
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
     def __repr__(self):
-        return '<List name %r>' % self.name
+        return "{}, {}, {}, {}, {}".format(
+            self.name,
+            self.description,
+            self.date_created,
+            self.date_modifed,
+            self.population
+        )
 
     def save(self):
         db.session.add(self)
         db.session.commit()
-    
+
     def delete(self):
         db.session.delete(self)
         db.session.commit()
@@ -112,15 +121,16 @@ class Item(db.Model):
     bucketlist_id = db.Column(db.Integer, db.ForeignKey('bucketlist.id'))
     owner_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     date_created = db.Column(db.DateTime, default=datetime.datetime.utcnow)
-    date_modified = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+    date_modified = db.Column(db.DateTime, default=datetime.datetime.utcnow,
+                              onupdate=datetime.datetime.utcnow)
 
     def __repr__(self):
         return '<Item Name %r>' % self.item_name
-    
+
     def save(self):
         db.session.add(self)
         db.session.commit()
-    
+
     def delete(self):
         db.session.delete(self)
         db.session.commit()
