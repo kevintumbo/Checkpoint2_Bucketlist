@@ -18,6 +18,7 @@ Thumbs.db
 
 # Application specific files
 cp2-venv
+cover
 
 # Database files
 *.db
