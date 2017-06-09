@@ -281,7 +281,7 @@ def create_app(config_name):
                             response.status_code = 201
                             return response
 
-    @app.route('/api/v1.0/bucketlists/<int:id>/items/<int:item_id>', methods=['PUT', 'DELETE'])
+    @app.route('/api/v1.0/bucketlists/<int:id>/items/<int:item_id>', methods=['GET', 'PUT', 'DELETE'])
     def bucketlist_items_manipulation(id, item_id):
         # Get the access token from the header
         auth_header = request.headers.get('Authorization')
@@ -375,6 +375,22 @@ def create_app(config_name):
                         })
                         response.status_code = 200
                         return response
+                
+                if request.method == 'GET':
+                    item = Item.query.filter_by(bucketlist_id=id,
+                                                id=item_id, owner_id=user_id).first()
+                    response = jsonify({
+                        'id': item.id,
+                        'name': item.item_name,
+                        'description': item.item_description,
+                        'done': item.is_done,
+                        'date_created': item.date_created,
+                        'date_modifed': item.date_modified,
+                        'created_by': item.owner_id
+                    })
+
+                    response.status_code = 200
+                    return response
 
     from .auth import auth_blueprint
     app.register_blueprint(auth_blueprint)
