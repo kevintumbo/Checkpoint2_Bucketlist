@@ -94,21 +94,21 @@ class LoginView(MethodView):
             user = User.query.filter_by(email=request.data['email']).first()
 
             # Try to authenticate the found user using their password
-            if not user and not user.password_is_valid(request.data['password']):
+            if user and user.password_is_valid(request.data['password']):
+                # Generate the access token. This will be used as the authorization header
+                access_token = user.generate_token(user.id)
+                if access_token:
+                    response = {
+                        'message': 'You logged in successfully.',
+                        'access_token': access_token.decode()
+                    }
+                    return make_response(jsonify(response)), 200
+            else:
                 # User does not exist. Therefore, we return an error message
                 response = {
                     'message': 'Invalid email or password, Please try again'
                 }
                 return make_response(jsonify(response)), 400
-
-            # Generate the access token. This will be used as the authorization header
-            access_token = user.generate_token(user.id)
-            if access_token:
-                response = {
-                    'message': 'You logged in successfully.',
-                    'access_token': access_token.decode()
-                }
-                return make_response(jsonify(response)), 200
 
         except Exception as e:
             # Create a response containing an string error message
@@ -127,7 +127,7 @@ auth_blueprint.add_url_rule(
     view_func=registration_view,
     methods=['POST'])
 
-# Define the rule for the registration url --->  api/v1.0/auth/login
+# Define the rule for the registration url --->  /auth/login
 # Then add the rule to the blueprint
 auth_blueprint.add_url_rule(
     '/api/v1.0/auth/login',

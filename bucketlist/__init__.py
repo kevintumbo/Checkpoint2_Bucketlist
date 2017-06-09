@@ -343,14 +343,14 @@ def create_app(config_name):
                             })
                             response.status_code = 400
                             return response
-                        
+
                         if not done:
                             response = jsonify({
                                 'message': "Bucketlist status desscription missing"
                             })
                             response.status_code = 400
                             return response
-                            
+
                         check_name = re.match('^[ a-zA-Z0-9_.-]+$', name)
                         if check_name is None:
                             response = jsonify({
