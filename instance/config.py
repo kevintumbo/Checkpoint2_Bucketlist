@@ -6,9 +6,9 @@ class Config(object):
     """Parent configuration class."""
     DEBUG = False
     CSRF_ENABLED = True
-    SECRET = os.getenv('BLEED')
+    SECRET = os.getenv('SECRET')
     SQLALCHEMY_DATABASE_URI = 'sqlite:////' + os.path.join(basedir, 'bucketlists.db')
-
+    
 class DevelopmentConfig(Config):
     """Configurations for Development."""
     DEBUG = True
