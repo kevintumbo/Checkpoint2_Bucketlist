@@ -11,7 +11,7 @@ install:
 env:
   - DB=sqlite
 # command to run tests
-script: --with-coverage --cover-package=bucketlist
+script: nosetests --with-coverage --cover-package=bucketlist
 
 after_success:
   - coveralls
