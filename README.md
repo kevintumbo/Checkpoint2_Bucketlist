@@ -61,49 +61,52 @@ This will return the number of tests run and the coverage of the tests.
 ## How To Use Bucketlist Api(example)
 
 ### Register A User
-POST : http://127.0.0.1:5000/api/v1.0/auth/register
-Body : {"username":"John", "email":"john@gmail.com", "password":"password"}
+-POST : http://127.0.0.1:5000/api/v1.0/auth/register
+-Body : {"username":"John", "email":"john@gmail.com", "password":"password"}
 ![Alt text](https://image.ibb.co/j2W57a/Screen_Shot_2017_06_12_at_14_39_29.png "create user")
 
-### Log in a user
-POST : http://127.0.0.1:5000/api/v1.0/auth/login
-Body : {"email": "john@gmail.com", "password": "password"}
+-POST : http://127.0.0.1:5000/api/v1.0/auth/login
+-Body : {"email": "john@gmail.com", "password": "password"}
 ![Alt text](https://image.ibb.co/kHNpYF/Screen_Shot_2017_06_12_at_14_39_42.png "Log in user")
 
 ### Create a Bucketlist
-POST : http://127.0.0.1:5000/api/v1.0/bucketlists/
-Body : {"name":"Hobbies", "description":"My hobbies"}
+-POST : http://127.0.0.1:5000/api/v1.0/bucketlists/
+-Body : {"name":"Hobbies", "description":"My hobbies"}
 ![Alt text](https://image.ibb.co/f6d7Lv/Screen_Shot_2017_06_12_at_14_40_15.png "create Bucketlist")
 
-### Return a Bucketlist
-GET : http://127.0.0.1:5000/api/v1.0/bucketlists/1
+### Return a Bucketlist using id
+-GET : http://127.0.0.1:5000/api/v1.0/bucketlists/1
 ![Alt text](https://image.ibb.co/dG9gfv/Screen_Shot_2017_06_12_at_14_40_35.png "Return Bucketlist")
 
+### Return a Bucketlist using name
+-GET : http://127.0.0.1:5000/api/v1.0/bucketlists?q=hobbies
+![Alt text](https://image.ibb.co/c3407a/Screen_Shot_2017_06_12_at_15_25_46.png "Return Bucketlist using name")
+
 ### Update A bucketlist
-PUT : http://127.0.0.1:5000/api/v1.0/bucketlists/1
-Body : {"name":"Updated Hobbies", "description":" Updated My hobbies"}
+-PUT : http://127.0.0.1:5000/api/v1.0/bucketlists/1
+-Body : {"name":"Updated Hobbies", "description":" Updated My hobbies"}
 ![Alt text](https://image.ibb.co/foywDF/Screen_Shot_2017_06_12_at_14_41_09.png "Update Bucketlist")
 
 ### Create an item in the bucketlists
-POST : http://127.0.0.1:5000/api/v1.0/bucketlists/1/items/
-Body : {"item_name":"cycling", "item_description":"Go cycling"}
+-POST : http://127.0.0.1:5000/api/v1.0/bucketlists/1/items/
+-Body : {"item_name":"cycling", "item_description":"Go cycling"}
 ![Alt text](https://image.ibb.co/kZQySa/Screen_Shot_2017_06_12_at_14_41_49.png "Create Bucketlist item")
 
-### Retrive A BucketList Item
-GET : http://127.0.0.1:5000/api/v1.0/bucketlists/1/items/1
+### Retrive A BucketList Item using id
+-GET : http://127.0.0.1:5000/api/v1.0/bucketlists/1/items/1
 ![Alt text](https://image.ibb.co/kfdwDF/Screen_Shot_2017_06_12_at_14_42_15.png "Return Bucketlist Item")
 
 ### Update A BucketList Item
-PUT : http://127.0.0.1:5000/api/v1.0/bucketlists/1/items/1
-Body : {"item_name":"update cycling", "item_description":" update Go cycling"}
+-PUT : http://127.0.0.1:5000/api/v1.0/bucketlists/1/items/1
+-Body : {"item_name":"update cycling", "item_description":" update Go cycling"}
 ![Alt text](https://image.ibb.co/foywDF/Screen_Shot_2017_06_12_at_14_41_09.png "Update Bucketlist Item")
 
 ### Delete a bucketlist item
-DELETE : http://127.0.0.1:5000/api/v1.0/bucketlists/1/items/1
+-DELETE : http://127.0.0.1:5000/api/v1.0/bucketlists/1/items/1
 ![Alt text](https://image.ibb.co/iUegfv/Screen_Shot_2017_06_12_at_14_43_24.png "Delete Bucketlist item")
 
 ### Delete A bucketlist
-DELETE : http://127.0.0.1:5000/api/v1.0/bucketlists/1
+-DELETE : http://127.0.0.1:5000/api/v1.0/bucketlists/1
 ![Alt text](https://image.ibb.co/buSsLv/Screen_Shot_2017_06_12_at_15_15_28.png "Delete Bucketlist")
 
 
