@@ -1,6 +1,6 @@
 # CP2--BucketList-Application-API
 [![Build Status](https://travis-ci.org/kevintumbo/Checkpoint2_Bucketlist.svg?branch=tests)](https://travis-ci.org/kevintumbo/Checkpoint2_Bucketlist)
-[[![Coverage Status](https://coveralls.io/repos/github/kevintumbo/Checkpoint2_Bucketlist/badge.svg?branch=master)](https://coveralls.io/github/kevintumbo/Checkpoint2_Bucketlist?branch=tests)
+[![Coverage Status](https://coveralls.io/repos/github/kevintumbo/Checkpoint2_Bucketlist/badge.svg?branch=tests)](https://coveralls.io/github/kevintumbo/Checkpoint2_Bucketlist?branch=tests)
 
 ### Bucketlist API
 
