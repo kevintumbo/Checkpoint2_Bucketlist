@@ -109,5 +109,8 @@ This will return the number of tests run and the coverage of the tests.
 -DELETE : http://127.0.0.1:5000/api/v1.0/bucketlists/1
 ![Alt text](https://image.ibb.co/buSsLv/Screen_Shot_2017_06_12_at_15_15_28.png "Delete Bucketlist")
 
+Author
+----
+	-Kevin Tumbo
 
 
