@@ -63,42 +63,48 @@ This will return the number of tests run and the coverage of the tests.
 ### Register A User
 POST : http://127.0.0.1:5000/api/v1.0/auth/register
 Body : {"username":"John", "email":"john@gmail.com", "password":"password"}
-![Alt text](https://preview.ibb.co/eQjQ7a/Screen_Shot_2017_06_12_at_14_39_29.png "create user")
+![Alt text](https://image.ibb.co/j2W57a/Screen_Shot_2017_06_12_at_14_39_29.png "create user")
 
 ### Log in a user
 POST : http://127.0.0.1:5000/api/v1.0/auth/login
 Body : {"email": "john@gmail.com", "password": "password"}
-![Alt text](https://preview.ibb.co/e70bDF/Screen_Shot_2017_06_12_at_14_39_42.png "create user")
+![Alt text](https://image.ibb.co/kHNpYF/Screen_Shot_2017_06_12_at_14_39_42.png "Log in user")
 
 ### Create a Bucketlist
 POST : http://127.0.0.1:5000/api/v1.0/bucketlists/
 Body : {"name":"Hobbies", "description":"My hobbies"}
+![Alt text](https://image.ibb.co/f6d7Lv/Screen_Shot_2017_06_12_at_14_40_15.png "create Bucketlist")
 
 ### Return a Bucketlist
 GET : http://127.0.0.1:5000/api/v1.0/bucketlists/1
+![Alt text](https://image.ibb.co/dG9gfv/Screen_Shot_2017_06_12_at_14_40_35.png "Return Bucketlist")
 
 ### Update A bucketlist
 PUT : http://127.0.0.1:5000/api/v1.0/bucketlists/1
 Body : {"name":"Updated Hobbies", "description":" Updated My hobbies"}
-
-
-### Delete A bucketlist
-DELETE : http://127.0.0.1:5000/api/v1.0/bucketlists/1
+![Alt text](https://image.ibb.co/foywDF/Screen_Shot_2017_06_12_at_14_41_09.png "Update Bucketlist")
 
 ### Create an item in the bucketlists
 POST : http://127.0.0.1:5000/api/v1.0/bucketlists/1/items/
 Body : {"item_name":"cycling", "item_description":"Go cycling"}
+![Alt text](https://image.ibb.co/kZQySa/Screen_Shot_2017_06_12_at_14_41_49.png "Create Bucketlist item")
 
 ### Retrive A BucketList Item
 GET : http://127.0.0.1:5000/api/v1.0/bucketlists/1/items/1
+![Alt text](https://image.ibb.co/kfdwDF/Screen_Shot_2017_06_12_at_14_42_15.png "Return Bucketlist Item")
 
 ### Update A BucketList Item
 PUT : http://127.0.0.1:5000/api/v1.0/bucketlists/1/items/1
 Body : {"item_name":"update cycling", "item_description":" update Go cycling"}
+![Alt text](https://image.ibb.co/foywDF/Screen_Shot_2017_06_12_at_14_41_09.png "Update Bucketlist Item")
 
 ### Delete a bucketlist item
 DELETE : http://127.0.0.1:5000/api/v1.0/bucketlists/1/items/1
+![Alt text](https://image.ibb.co/iUegfv/Screen_Shot_2017_06_12_at_14_43_24.png "Delete Bucketlist item")
 
+### Delete A bucketlist
+DELETE : http://127.0.0.1:5000/api/v1.0/bucketlists/1
+![Alt text](https://image.ibb.co/buSsLv/Screen_Shot_2017_06_12_at_15_15_28.png "Delete Bucketlist")
 
 
 
