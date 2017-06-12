@@ -63,10 +63,12 @@ This will return the number of tests run and the coverage of the tests.
 ### Register A User
 POST : http://127.0.0.1:5000/api/v1.0/auth/register
 Body : {"username":"John", "email":"john@gmail.com", "password":"password"}
+![Alt text](https://preview.ibb.co/eQjQ7a/Screen_Shot_2017_06_12_at_14_39_29.png "create user")
 
 ### Log in a user
 POST : http://127.0.0.1:5000/api/v1.0/auth/login
 Body : {"email": "john@gmail.com", "password": "password"}
+![Alt text](https://preview.ibb.co/e70bDF/Screen_Shot_2017_06_12_at_14_39_42.png "create user")
 
 ### Create a Bucketlist
 POST : http://127.0.0.1:5000/api/v1.0/bucketlists/
