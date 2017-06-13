@@ -28,11 +28,11 @@ Bucketlist Api has the following endpionts
 
 
 ### Installation
-clone the repository
-cd into the repo and checkout to the tests branch
-Create an isolated virtual environment
-Install the dependencies via pip install -r requirements.txt
-create a .env file and add the following
+clone the repository.
+cd into the repo and checkout to the master branch.
+Create an isolated virtual environment.
+Install the dependencies via pip install -r requirements.txt.
+create a .env file and add the following.
 
 ```sh
 source name-of-virtual-environment/bin/activate
@@ -42,7 +42,7 @@ export APP_SETTINGS="development"
 ```
 
 ### Setup Up Database And Migrations
-run migrations
+run migrations.
 *python manage.py db init
 *python manage.py db migrate
 *python manage.py db upgrade
@@ -51,7 +51,8 @@ run migrations
 when you run the server it should print out
 * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
 
-### Testing
+### 
+
 to run tests run
 
 *nosetests --with-coverage --cover-package=bucketlist
@@ -61,52 +62,79 @@ This will return the number of tests run and the coverage of the tests.
 ## How To Use Bucketlist Api(example)
 
 ### Register A User
+
 -POST : http://127.0.0.1:5000/api/v1.0/auth/register
+
 -Body : {"username":"John", "email":"john@gmail.com", "password":"password"}
+
 ![Alt text](https://image.ibb.co/j2W57a/Screen_Shot_2017_06_12_at_14_39_29.png "create user")
 
 -POST : http://127.0.0.1:5000/api/v1.0/auth/login
+
 -Body : {"email": "john@gmail.com", "password": "password"}
+
 ![Alt text](https://image.ibb.co/kHNpYF/Screen_Shot_2017_06_12_at_14_39_42.png "Log in user")
 
 ### Create a Bucketlist
+
 -POST : http://127.0.0.1:5000/api/v1.0/bucketlists/
+
 -Body : {"name":"Hobbies", "description":"My hobbies"}
+
 ![Alt text](https://image.ibb.co/f6d7Lv/Screen_Shot_2017_06_12_at_14_40_15.png "create Bucketlist")
 
 ### Return a Bucketlist using id
+
 -GET : http://127.0.0.1:5000/api/v1.0/bucketlists/1
+
 ![Alt text](https://image.ibb.co/dG9gfv/Screen_Shot_2017_06_12_at_14_40_35.png "Return Bucketlist")
 
 ### Return a Bucketlist using name
+
 -GET : http://127.0.0.1:5000/api/v1.0/bucketlists?q=hobbies
+
 ![Alt text](https://image.ibb.co/c3407a/Screen_Shot_2017_06_12_at_15_25_46.png "Return Bucketlist using name")
 
 ### Update A bucketlist
+
 -PUT : http://127.0.0.1:5000/api/v1.0/bucketlists/1
+
 -Body : {"name":"Updated Hobbies", "description":" Updated My hobbies"}
+
 ![Alt text](https://image.ibb.co/foywDF/Screen_Shot_2017_06_12_at_14_41_09.png "Update Bucketlist")
 
 ### Create an item in the bucketlists
+
 -POST : http://127.0.0.1:5000/api/v1.0/bucketlists/1/items/
+
 -Body : {"item_name":"cycling", "item_description":"Go cycling"}
+
 ![Alt text](https://image.ibb.co/kZQySa/Screen_Shot_2017_06_12_at_14_41_49.png "Create Bucketlist item")
 
 ### Retrive A BucketList Item using id
+
 -GET : http://127.0.0.1:5000/api/v1.0/bucketlists/1/items/1
+
 ![Alt text](https://image.ibb.co/kfdwDF/Screen_Shot_2017_06_12_at_14_42_15.png "Return Bucketlist Item")
 
 ### Update A BucketList Item
+
 -PUT : http://127.0.0.1:5000/api/v1.0/bucketlists/1/items/1
+
 -Body : {"item_name":"update cycling", "item_description":" update Go cycling"}
+
 ![Alt text](https://image.ibb.co/foywDF/Screen_Shot_2017_06_12_at_14_41_09.png "Update Bucketlist Item")
 
 ### Delete a bucketlist item
+
 -DELETE : http://127.0.0.1:5000/api/v1.0/bucketlists/1/items/1
+
 ![Alt text](https://image.ibb.co/iUegfv/Screen_Shot_2017_06_12_at_14_43_24.png "Delete Bucketlist item")
 
 ### Delete A bucketlist
+
 -DELETE : http://127.0.0.1:5000/api/v1.0/bucketlists/1
+
 ![Alt text](https://image.ibb.co/buSsLv/Screen_Shot_2017_06_12_at_15_15_28.png "Delete Bucketlist")
 
 Author
