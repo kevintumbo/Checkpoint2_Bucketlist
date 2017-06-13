@@ -29,9 +29,13 @@ Bucketlist Api has the following endpionts
 
 ### Installation
 clone the repository.
+
 cd into the repo and checkout to the master branch.
+
 Create an isolated virtual environment.
+
 Install the dependencies via pip install -r requirements.txt.
+
 create a .env file and add the following.
 
 ```sh
@@ -43,13 +47,14 @@ export APP_SETTINGS="development"
 
 ### Setup Up Database And Migrations
 run migrations.
-*python manage.py db init
-*python manage.py db migrate
-*python manage.py db upgrade
-*Flask Run
+
+	*python manage.py db init
+	*python manage.py db migrate
+	*python manage.py db upgrade
+	*Flask Run
 
 when you run the server it should print out
-* Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
+	* Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
 
 ### 
 
