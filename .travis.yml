@@ -11,7 +11,10 @@ install:
 env:
   - DB=postgres
 
-efore_script:
+services:
+  - postgresql
+
+before_script:
   - psql -c "CREATE DATABASE bucketlists;" -U postgres
 # command to run tests
 script: nosetests --with-coverage --cover-package=bucketlist
