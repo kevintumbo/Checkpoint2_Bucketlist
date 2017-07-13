@@ -101,29 +101,26 @@ def create_app(config_name):
                     bucketlists = Bucketlist.query.filter_by(owner_id=user_id).filter(
                         Bucketlist.name.like('%{}%'.format(q))).paginate(
                             int(page_no), int(limit))
+                    
+                    response = jsonify({
+                        'Bucketlist': [
+                                        {
+                                            'id': bucketlist.id,
+                                            'name': bucketlist.name,
+                                            'description': bucketlist.description,
+                                            'date_created': bucketlist.date_created,
+                                            'date_modifed': bucketlist.date_modifed
+                                        } for bucketlist in bucketlists.items
 
-                    results = []
-
-                    for bucketlist in bucketlists.items:
-                        obj = {
-                            'id': bucketlist.id,
-                            'name': bucketlist.name,
-                            'description': bucketlist.description,
-                            'date_created': bucketlist.date_created,
-                            'date_modifed': bucketlist.date_modifed
-                        }
-
-                        results.append(obj)
-                    prev = {'prev': url_for(request.endpoint, page_no=bucketlists.prev_num,
-                                            limit=limit, _external=True)
-                                    if bucketlists.has_prev else None}
-                    nxt = {'next': url_for(request.endpoint, page_no=bucketlists.next_num,
-                                           limit=limit, _external=True)
-                                   if bucketlists.has_next else None}
-
-                    results.append(prev)
-                    results.append(nxt)
-                    response = jsonify(results)
+                                    ],
+                        'next': url_for(
+                                        request.endpoint, page_no=bucketlists.next_num, limit=limit,
+                                        _external=True) if bucketlists.has_next else None,
+                        'prev': url_for(
+                            request.endpoint, page_no=bucketlists.prev_num, limit=limit,
+                            _external=True) if bucketlists.has_prev else None,
+                                    })
+                                    
                     response.status_code = 200
                     return response
             else:
