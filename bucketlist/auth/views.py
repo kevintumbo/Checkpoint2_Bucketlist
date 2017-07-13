@@ -2,6 +2,7 @@ import re
 from flask.views import MethodView
 from flask import make_response, request, jsonify
 from bucketlist.models import User
+from flask_cors import CORS, cross_origin
 from . import auth_blueprint
 
 class RegistrationView(MethodView):

@@ -2,12 +2,13 @@ import re
 from flask.ext.api import FlaskAPI, status, exceptions
 from flask_sqlalchemy import SQLAlchemy
 from flask import Blueprint, request, jsonify, abort, url_for
+from flask_cors import CORS, cross_origin
 # local import
 from instance.config import app_config
 
 # This instance of a Blueprint that represents the authentication blueprint
 auth_blueprint = Blueprint('auth', __name__)
-
+CORS(auth_blueprint)
 # initialize sql-alchemy
 db = SQLAlchemy()
 
@@ -18,13 +19,14 @@ def create_app(config_name):
     from bucketlist.models import Bucketlist, Item, User
 
     app = FlaskAPI(__name__, instance_relative_config=True)
+    CORS(app)
     app.config.from_object(app_config['development'])
     app.config.from_pyfile('config.py')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
 
     @app.route('/api/v1.0/bucketlists/', methods=['POST', 'GET'])
-
+    @cross_origin()
     def bucketlists():
         """
         Methods for posting and retriving a bucketlist
@@ -132,7 +134,7 @@ def create_app(config_name):
                 return response
 
     @app.route('/api/v1.0/bucketlists/<int:id>', methods=['GET', 'PUT', 'DELETE'])
-
+    @cross_origin()
     def bucketlist_manipulation(id):
      # retrieve a buckelist using it's ID
         bucketlist = Bucketlist.query.filter_by(id=id).first()
@@ -211,6 +213,7 @@ def create_app(config_name):
             return response
 
     @app.route('/api/v1.0/bucketlists/<int:id>/items/', methods=['POST'])
+    @cross_origin()
     def bucketlists_items(id):
         # Get the access token from the header
         auth_header = request.headers.get('Authorization')
@@ -282,6 +285,7 @@ def create_app(config_name):
                             return response
 
     @app.route('/api/v1.0/bucketlists/<int:id>/items/<int:item_id>', methods=['GET', 'PUT', 'DELETE'])
+    @cross_origin()
     def bucketlist_items_manipulation(id, item_id):
         # Get the access token from the header
         auth_header = request.headers.get('Authorization')
