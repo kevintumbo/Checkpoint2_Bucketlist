@@ -7,7 +7,7 @@ class Config(object):
     DEBUG = False
     CSRF_ENABLED = True
     SECRET = os.getenv('SECRET') or 'this-is-very-secret'
-    SQLALCHEMY_DATABASE_URI = 'sqlite:////' + os.path.join(basedir, 'bucketlists.db')
+    SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/bucketlists'
     
 class DevelopmentConfig(Config):
     """Configurations for Development."""
