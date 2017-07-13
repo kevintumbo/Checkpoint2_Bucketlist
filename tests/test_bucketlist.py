@@ -162,7 +162,7 @@ class BucketListTests(BaseTestCase):
         response = self.client().post('/api/v1.0/bucketlists/',
                                       data=self.bucketlists2,
                                       headers=self.my_header)
-        response = self.client().get("/api/v1.0/bucketlists/?q=life",
+        response = self.client().get("/api/v1.0/bucketlists/?q=Life",
                                      headers=self.my_header)
         self.assertEqual(response.status_code, 200)
         self.assertIn("Life Goals", str(response.data))
