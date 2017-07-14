@@ -24,6 +24,7 @@ class ProductionConfig(Config):
     """Configurations for Production."""
     DEBUG = False
     TESTING = False
+    SQLALCHEMY_DATABASE_URI = 'postgres://dtxaabufzvgmsw:98322d762bb7e71aca19fd9c3cf552381bcabe4a4d23a62ab44011cdd39d5021@ec2-79-125-13-42.eu-west-1.compute.amazonaws.com:5432/d18m9d4h3p1s2c'
 
 app_config = {
     'testing': TestingConfig,
