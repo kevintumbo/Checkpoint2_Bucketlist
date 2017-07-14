@@ -20,11 +20,14 @@ def create_app(config_name):
 
     app = FlaskAPI(__name__, instance_relative_config=True)
     CORS(app)
-    app.config.from_object(app_config['development'])
+    app.config.from_object(app_config[config_name])
     app.config.from_pyfile('config.py')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
-
+    
+    @app.route('/')
+    def home ():
+        return "hello"
     @app.route('/api/v1.0/bucketlists/', methods=['POST', 'GET'])
     @cross_origin()
     def bucketlists():
